@@ -1,0 +1,9 @@
+-- TherOS 0.1.3 --
+CHANGELOG
+
+- added the arrow (-> ) to the main menu
+
+
+PLANNED FEATURES FOR 0.2.0
+- a more graphic interface
+- arrow key controls

@@ -1,0 +1,8 @@
+term = require("term")
+term.clear()
+io.write("enter name of file including extention (.lua, .txt) \n")
+io.write("->")
+local filename = io.read()
+os.execute("touch " .. filename)
+io.write("file created.")
+os.execute("main")
