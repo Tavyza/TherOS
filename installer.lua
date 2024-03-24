@@ -68,7 +68,7 @@ local function installTherOS()
     local file, err = io.open(shrcPath, "a")
     local ee = file:read("*all")
     print("reading .shrc. if its blank, the installer will write to it. if the line needed is already there, the installer will skip it.")
-    if shrcPath:find("main", true) then
+    if shrcPath:find("main", 1, true) then
       print("shrc already written")
       file:close()
     else
@@ -122,7 +122,7 @@ local function installFromGithub()
   local file, err = io.open(shrcPath, "a")
   local ee = file:read("*all")
   print("reading .shrc. if its blank, the installer will write to it. if the line needed is already there, the installer will skip it.")
-  if shrcPath:find("main", true) then
+  if shrcPath:find("main", 1, true) then
     print("shrc already written")
     file:close()
   else
