@@ -14,7 +14,7 @@ local function centerText(y, text, color)
 end
 
 local function installerMenu()
-    local options = {"Install TherOS", "Install a Separate Program", "Exit Installer"}
+    local options = {"Install TherOS", "Install TherOS from GitHub", "Install a Separate Program", "Exit Installer"}
     t.clear()
     gpu.fill(1, 1, w, h, " ")
     centerText(1, "TherOS 0.2.0 Installer", 0xFFFFFF)
@@ -24,7 +24,7 @@ local function installerMenu()
 end
 
 local function installTherOS()
-    print("Welcome to the TherOS installer version 0.1. Please wait while the program gathers the system files.")
+  print("Welcome to the TherOS installer version 0.2.0. Please wait while the program gathers the system files.")
   local scriptPath = "/mnt/---"
   local scriptId = "---" --modify if this changes to a seperate floppy
   print("drive id is " .. scriptId)
@@ -54,7 +54,7 @@ local function installTherOS()
     print("copying file creator...")
     os.execute("cp /mnt/" .. scriptId .. "/create_file.lua  " .. dest)
     print("done")
-    print("copying offline installer...")
+    print("copying OS installer...")
     os.execute("cp /mnt/" .. scriptId .. "/installer.lua  " .. dest)
     print("done")
     print("copying TherOS text adventure...")
@@ -68,12 +68,12 @@ local function installTherOS()
     local file, err = io.open(shrcPath, "a")
     local ee = file:read("*all")
     print("reading .shrc. if its blank, the installer will write to it. if the line needed is already there, the installer will skip it.")
-    if shrcPath:find("main", 1, true) then
+    if shrcPath:find("main", true) then
       print("shrc already written")
       file:close()
     else
       file:write("main\n")
-      print("Wrote main to " .. shrcPath)
+      print("Wrote 'main' to " .. shrcPath)
       file:close()
     end
   end
@@ -82,9 +82,62 @@ local function installTherOS()
     os.execute("reboot")
 end
 
+local function installFromGithub()
+  print("Welcome to the TherOS installer version 0.2.0. Please wait while the program gathers the system files.")
+  local source = scriptPath
+  local dest = "/home/bin"
+  if fs.exists("/home/bin") and fs.isDirectory("/home/bin") then
+    print("'bin' directory detected, proceeding...")
+  else
+    print("'bin' directory not detected, creating...")
+    os.execute("mkdir /home/bin")
+    print("created 'bin' directory (used for apps)")
+  end
+  print("downloading main menu...")
+  os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/main/main.lua /home/bin/main.lua")
+  print("done")
+  print("downloading file manager...")
+  os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/main/file_manager.lua /home/bin/file_manager.lua")
+  print("done")
+  print("downloading program installer...")
+  os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/main/program_installer.lua /home/bin/program_installer.lua")
+  print("done")
+  print("downloading command prompt...")
+  os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/main/command_prompt.lua /home/bin/command_prompt.lua")
+  print("done")
+  print("downloading file creator...")
+  os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/main/create_file.lua /home/bin/create_file.lua")
+  print("done")
+  print("downloading OS installer...")
+  os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/main/installer.lua /home/bin/installer.lua")
+  print("done")
+  print("downloading TherOS text adventure...")
+  os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/main/hello.lua /home/bin/hello.lua")
+  print("done")
+  print("downloading changelog.txt...")
+  os.execute("cwget https://raw.githubusercontent.com/Tavyza/TherOS/main/changelog.txt /home/bin/changelog.txt")
+  print("done")
+  local homeDirectory = "/home/"
+  local shrcPath = "/home/.shrc"
+  local file, err = io.open(shrcPath, "a")
+  local ee = file:read("*all")
+  print("reading .shrc. if its blank, the installer will write to it. if the line needed is already there, the installer will skip it.")
+  if shrcPath:find("main", true) then
+    print("shrc already written")
+    file:close()
+  else
+    file:write("main\n")
+    print("Wrote 'main' to " .. shrcPath)
+    file:close()
+  end
+  centerText(h - 2, "Installation complete. Ready for reboot.", 0xFFFFFF)
+  os.sleep(2)
+  os.execute("reboot")
+end
+
 local function installSeparateProgram()
   print("Please type the drive ID. you can find this by leaving the screen, hovering over the drive, and looking at the first 3 characters of the long string in the tooltip of the drive (the thing with the name and stuff)")
-  io.write("driveID -> ")
+  io.write("drive ID -> ")
   local installMedia = io.read()
   print ("Getting files...")
   local sourcedir = "/mnt/" .. installMedia
@@ -98,8 +151,8 @@ local function installSeparateProgram()
     end
   end
 end
-    centerText(h - 2, "Files copied successfully.", 0xFFFFFF)
-end
+  centerText(h - 2, "Files copied successfully.", 0xFFFFFF)
+
 
 installerMenu()
 
@@ -109,8 +162,10 @@ while true do
     if choice == 1 then
         installTherOS()
     elseif choice == 2 then
-        installSeparateProgram()
+        installFromGithub()
     elseif choice == 3 then
+      installSeparateProgram()
+    elseif choice == 4 then
         os.execute("sh")
         break
     end
