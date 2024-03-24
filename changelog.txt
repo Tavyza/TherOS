@@ -1,13 +1,8 @@
--- TherOS 0.2.0 --
+-- TherOS 0.2.1 --
 CHANGELOG
 
 ADDED
-- A graphical interface
-- RAM usage at the bottom of the homepager
-- A brand new installer! (The installer will not work unmodified, and still cannot pull OS files from github)
-FIXED
-- File manager can now reach all directories on your computer
+- Installer can now pull from github
 
-PLANNED for 0.2.1
-- Installer can pull from github
+PLANNED for 0.2.2
 - File manager can manage directories
