@@ -1,9 +1,13 @@
--- TherOS 0.1.3 --
+-- TherOS 0.2.0 --
 CHANGELOG
 
-- added the arrow (-> ) to the main menu
+ADDED
+- A graphical interface
+- RAM usage at the bottom of the homepager
+- A brand new installer! (The installer will not work unmodified, and still cannot pull OS files from github)
+FIXED
+- File manager can now reach all directories on your computer
 
-
-PLANNED FEATURES FOR 0.2.0
-- a more graphic interface
-- arrow key controls
+PLANNED for 0.2.1
+- Installer can pull from github
+- File manager can manage directories

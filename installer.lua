@@ -1,24 +1,38 @@
-term = require("term")
-filesystem = require("filesystem")
+local component = require("component")
+local gpu = component.gpu
+local fs = require("filesystem")
+local e = require("event")
+local t = require("term")
 
+local w, h = gpu.getResolution()
+gpu.fill(1, 1, w, h, " ")
 
-term.clear()
+local function centerText(y, text, color)
+    local x = math.floor(w / 2 - #text / 2)
+    gpu.setForeground(color)
+    gpu.set(x, y, text)
+end
 
-print("What are you installing?")
-print("TherOS (1)")
-print("A seperate program (2)")
-io.write("-> ")
-local installFile = io.read()
-if installFile == "1" then
-  print("Welcome to the TherOS installer version 0.1. Please wait while the program gathers the system files.")
-  local scriptPath = "/mnt/bb7"
-  local scriptId = "bb7" --modify if this changes to a seperate floppy
+local function installerMenu()
+    local options = {"Install TherOS", "Install a Separate Program", "Exit Installer"}
+    t.clear()
+    gpu.fill(1, 1, w, h, " ")
+    centerText(1, "TherOS 0.2.0 Installer", 0xFFFFFF)
+    for i, option in ipairs(options) do
+        centerText(3 + (i - 1) * 2, option, 0xFFFFFF)
+    end
+end
+
+local function installTherOS()
+    print("Welcome to the TherOS installer version 0.1. Please wait while the program gathers the system files.")
+  local scriptPath = "/mnt/---"
+  local scriptId = "---" --modify if this changes to a seperate floppy
   print("drive id is " .. scriptId)
   print("Script path:", scriptPath)
-  for entry in filesystem.list(scriptPath) do
-    local source = scriptPath 
+  for entry in fs.list(scriptPath) do
+    local source = scriptPath
     local dest = "/home/bin"
-    if filesystem.exists("/home/bin") and filesystem.isDirectory("/home/bin") then
+    if fs.exists("/home/bin") and fs.isDirectory("/home/bin") then
       print("'bin' directory detected, proceeding...")
     else
       print("'bin' directory not detected, creating...")
@@ -60,31 +74,15 @@ if installFile == "1" then
     else
       file:write("main\n")
       print("Wrote main to " .. shrcPath)
-      file:close()  
+      file:close()
     end
-    print("Done! Ready for reboot.")
-    io.write("System files copied. Reboot now? (y/n)-> ")
-    local reboot = io.read()
-    if reboot == "y" then
-      print("rebooting in 5 seconds")
-      os.sleep(1)
-      print("rebooting in 4 seconds")
-      os.sleep(1)
-      print("rebooting in 3 seconds")
-      os.sleep(1)
-      print("rebooting in 2 seconds")
-      os.sleep(1)
-      print("rebooting in 1 seconds")
-      os.sleep(1)
-      print("rebooting...")
-      os.execute("reboot")
-    else
-      print("Alright, returning to shell.")
-    os.sleep(1)
-    os.exit()
   end
+    centerText(h - 2, "Installation complete. Ready for reboot.", 0xFFFFFF)
+    os.sleep(2)
+    os.execute("reboot")
 end
-elseif installFile == "2" then
+
+local function installSeparateProgram()
   print("Please type the drive ID. you can find this by leaving the screen, hovering over the drive, and looking at the first 3 characters of the long string in the tooltip of the drive (the thing with the name and stuff)")
   io.write("driveID -> ")
   local installMedia = io.read()
@@ -92,11 +90,29 @@ elseif installFile == "2" then
   local sourcedir = "/mnt/" .. installMedia
   local destdir = "/home/"
   -- Iterate through all files in the source directory
-  for entry in filesystem.list(sourcedir) do
+  for entry in fs.list(sourcedir) do
     local sourcePath = sourcedir .. "/" .. entry
-    local destinationPath = destdir .. "/" .. entry  
-    if not filesystem.isDirectory(sourcePath) then
-      filesystem.copy(sourcePath, destinationPath)
+    local destinationPath = destdir .. "/" .. entry
+    if not fs.isDirectory(sourcePath) then
+      fs.copy(sourcePath, destinationPath)
     end
   end
+end
+    centerText(h - 2, "Files copied successfully.", 0xFFFFFF)
+end
+
+installerMenu()
+
+while true do
+    local _, _, _, y, _, _ = e.pull("touch")
+    local choice = math.floor((y - 3) / 2) + 1
+    if choice == 1 then
+        installTherOS()
+    elseif choice == 2 then
+        installSeparateProgram()
+    elseif choice == 3 then
+        os.execute("sh")
+        break
+    end
+    installerMenu()
 end
