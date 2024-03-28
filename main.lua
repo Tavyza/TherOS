@@ -46,7 +46,7 @@ end
 local options = updateOptions()
 table.insert(options, "reboot")
 table.insert(options, "shutdown")
-local topText = "TherOS 0.2.0 - Beta Version"
+local topText = "TherOS 0.2.1 - Beta Version"
 
 displayMenu(options, topText)
 
@@ -57,7 +57,7 @@ while true do
     if choice >= 1 and choice <= #options then
         local selectedOption = options[choice]
         if selectedOption == "reboot" then
-            c.reboot()
+            os.execute("reboot")
         elseif selectedOption == "shutdown" then
             c.shutdown()
         else
