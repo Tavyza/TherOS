@@ -42,6 +42,7 @@ local function getFullPath(currentPath, file)
 end
 
 local currentPath = "/"
+optionsDisplayed = false
 
 local function displayCloseButton()
     local closeButton = "Close"
@@ -103,6 +104,7 @@ while true do
                 local copdes = io.read()
                 print("Copying to: " .. copdes) -- Debug print
             end
+            optionsDisplayed = false
         end
     end
 end
