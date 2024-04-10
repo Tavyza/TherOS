@@ -100,9 +100,9 @@ while true do
                 os.execute("mv " .. selectedFile .. " " .. newPath)
             elseif option == 5 then
                 print("Enter copy destination: ") -- Debug print
-
                 local copdes = io.read()
                 print("Copying to: " .. copdes) -- Debug print
+                os.execute("cp " .. selectedFile .. " " .. copdes)
             end
             optionsDisplayed = false
         end
