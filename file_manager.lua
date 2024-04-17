@@ -3,6 +3,7 @@ local gpu = component.gpu
 local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
+local keyboard = require("keyboard")
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
@@ -50,6 +51,7 @@ local function displayCloseButton()
 end
 
 while true do
+    ::loop::
     local files = listFiles(currentPath)
     displayFiles(files, currentPath)
     displayCloseButton()
@@ -63,7 +65,35 @@ while true do
     if choice >= 1 and choice <= #files and not optionsDisplayed then
         local selectedFile = getFullPath(currentPath, files[choice])
         if fs.isDirectory(selectedFile) then
-            currentPath = selectedFile
+          if keyboard.isKeyDown(0x2A) == true then
+            optionsDisplayed = true
+            local options = {"Open", "Delete"}
+            local optionSpacing = 2
+            local startLine = h / 2 - (#options * optionSpacing) / 2
+            for i, option in ipairs(options) do
+              centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
+            end
+            local _, _, _, yOption, _, _ = e.pull("touch")
+            local option = math.floor((yOption - startLine) / optionSpacing) + 1
+            print("Selected option: " .. option)
+
+            if option == 1 then
+              print("Opening directory")
+              currentPath = selectedFile
+            elseif option == 2 then
+              print("Are you sure you want to delete this directory? This will also remove all items inside of it!")
+              io.write("y/n -> ")
+              confirm = io.read()
+              if confirm == "y" then
+                os.execute("rm -rf " .. selectedFile)
+              else
+                print("Removal cancelled")
+              end
+              optionsDisplayed = false
+            end
+          else
+          currentPath = selectedFile
+          end
         else
             optionsDisplayed = true
             local options = {"Run", "Edit", "Delete", "Move/Rename", "Copy", "Cancel"}
@@ -86,8 +116,9 @@ while true do
                 print("Editing file: " .. selectedFile) -- Debug print
                 os.execute("edit " .. selectedFile)
             elseif option == 3 then
-                print("Delete confirmation for: " .. selectedFile) -- Debug print
-                print("Are you sure you want to remove this file or directory? (y/n)")
+                print("Delete " .. selectedFile) -- Debug print
+                print("Are you sure you want to remove this file?")
+                io.write("y/n -> ")
                 if io.read() == "y" then
                     os.execute("rm " .. selectedFile)
                 else

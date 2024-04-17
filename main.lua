@@ -46,7 +46,7 @@ end
 local options = updateOptions()
 table.insert(options, "reboot")
 table.insert(options, "shutdown")
-local topText = "TherOS 0.2.1 - Beta Version"
+local topText = "TherOS 0.2.2 - Beta Version"
 
 displayMenu(options, topText)
 
