@@ -8,6 +8,10 @@ while true do
   local command = io.read()
   if command == "exit" then
     break
+  elseif command == "help" then
+    print("-- HELP --")
+    print("Commands: \nhelp - Shows this menu\nexit - closes the command prompt")
+    print("-- HELP --")
   end
   os.execute(command)
 end
