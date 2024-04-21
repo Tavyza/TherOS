@@ -89,8 +89,8 @@ while true do
               else
                 print("Removal cancelled")
               end
-              optionsDisplayed = false
             end
+            optionsDisplayed = false
           else
           currentPath = selectedFile
           end
