@@ -1,7 +1,7 @@
 term = require("term")
 term.clear()
-print("Command prompt. All OpenOS commands should work here. This exists to allow you to do things by yourself.\n Warning-This program may be unstable and may not work as intended.")
-print("enter in 'exit' to close the command prompt.")
+print("TherTerm 1.0.0")
+print("For help, type help\nTo exit, type exit")
 
 while true do
   io.write("-> ")
