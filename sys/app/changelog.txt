@@ -1,0 +1,17 @@
+-- TherOS 1.0.0 --
+CHANGELOG
+
+ADDED
+- merged file creator and file manager into 1 app
+- you can now create directories in the file manager
+
+PLANNED for 1.0.0
+- make a new init.lua and start shifting away from OpenOS
+- add configuration to the installation process
+- make settings menu
+- make a whole load of libraries
+- auto update detection (the installer would be able to check for updates from github)
+
+-- make sure to put suggestions of what you want to see in the Github issues page! --
+
+Note that i am not spending much of my time on updating TherOS. Do not expect quick updates.
