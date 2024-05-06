@@ -3,6 +3,7 @@ local gpu = component.gpu
 local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
+local c = require("computer")
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
@@ -153,7 +154,7 @@ local function installFromGithub()
     io.write("y/n -> ")
     rb = io.read()
     if rb == "y" then
-      shutdown(reboot)
+      c.shutdown(reboot)
     else
       os.exit()
     end
