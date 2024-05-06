@@ -154,7 +154,7 @@ local function installFromGithub()
     io.write("y/n -> ")
     rb = io.read()
     if rb == "y" then
-      c.shutdown(restart)
+      c.shutdown(true)
     else
       os.exit()
     end
