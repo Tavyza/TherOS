@@ -117,7 +117,7 @@ local function installFromGithub()
       fs.makeDirectory("/sys/apps")
     end
     print("checking for /sys/util")
-    if fs.exist("/sys/util") and fs.isDirectory("/sys/util") then
+    if fs.exists("/sys/util") and fs.isDirectory("/sys/util") then
       print("/sys/util exists, skipping...")
     else
       print("/sys/util does not exist, creating...")
