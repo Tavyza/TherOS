@@ -142,7 +142,7 @@ local function installFromGithub()
     print("installer.lua -> /sys/apps/installer.lua")
     os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/app/installer.lua /sys/apps/installer.lua")
     print("program_installer.lua -> /sys/apps/program_installer.lua")
-    os.execute("wget -f https://github.com/Tavyza/TherOS/blob/bleeding-edge/sys/app/installer.lua /sys/apps/program_installer.lua")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/app/program_installer.lua /sys/apps/program_installer.lua")
     print("therterm.lua -> /sys/util/therterm.lua")
     os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/util/therterm.lua /sys/util/therterm.lua")
     print("-- 4/4 GRAPPING BOOT --")
@@ -154,7 +154,7 @@ local function installFromGithub()
     io.write("y/n -> ")
     rb = io.read()
     if rb == "y" then
-      c.shutdown(reboot)
+      c.shutdown(restart)
     else
       os.exit()
     end
