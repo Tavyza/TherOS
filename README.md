@@ -9,7 +9,7 @@ Please report all bugs.
 
 2 - Reboot
 
-3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/apps/installer.lua``` (without the quotes) in the shell
+3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/apps/installer.lua``` in the shell
 
 4 - Run ```installer``` in the shell
 
