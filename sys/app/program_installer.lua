@@ -34,6 +34,7 @@ end
 
 
 while true do
+  menu()
   local _, _, _, y, _, _ = e.pull("touch")
   local choice = math.floor((y - 5) / 2) + 1
   if choice == 1 then
