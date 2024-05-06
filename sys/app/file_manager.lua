@@ -63,6 +63,7 @@ while true do
 
     if choice >= 1 and choice <= #files and not optionsDisplayed then
         local selectedFile = getFullPath(currentPath, files[choice])
+        print(selectedFile)
         if fs.isDirectory(selectedFile) then
           if keyboard.isKeyDown(0x2A) == true then
             optionsDisplayed = true
