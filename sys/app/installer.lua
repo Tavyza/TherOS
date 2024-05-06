@@ -73,37 +73,91 @@ local function installTherOS()
 end
 
 local function installFromGithub()
-  print("Welcome to the TherOS installer version 0.2.0. Please wait while the program gathers the system files.")
-  local source = scriptPath
-  local dest = "/home/bin"
-  if fs.exists("/home/bin") and fs.isDirectory("/home/bin") then
-    print("'bin' directory detected, proceeding...")
-  else
-    print("'bin' directory not detected, creating...")
-    os.execute("mkdir /home/bin")
-    print("created 'bin' directory (used for apps)")
+  print("Welcome to the TherOS installer version 1.0.0")
+  print("1 - TherOS stable release")
+  print("2 - TherOS bleeding edge (may contain bugs!)")
+  io.write("-> ")
+  ver = io.read()
+  if ver == 1 then
+    if fs.exists("/home/bin") and fs.isDirectory("/home/bin") then
+      print("'bin' directory detected, proceeding...")
+    else
+      print("'bin' directory not detected, creating...")
+      os.execute("mkdir /home/bin")
+      print("created 'bin' directory (used for apps)")
+    end
+    print("downloading main menu...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/main.lua /home/bin/main.lua")
+    print("downloading file manager...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/file_manager.lua /home/bin/file_manager.lua")
+    print("downloading program installer...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/program_installer.lua /home/bin/program_installer.lua")
+    print("downloading command prompt...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/command_prompt.lua /home/bin/command_prompt.lua")
+    print("downloading file creator...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/create_file.lua /home/bin/create_file.lua")
+    print("downloading OS installer...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/installer.lua /home/bin/installer.lua")
+    print("downloading TherOS text adventure...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/hello.lua /home/bin/hello.lua")
+    print("downloading changelog.txt...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/changelog.txt /home/bin/changelog.txt")
+    print("replacing .shrc")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/.shrc /home/.shrc")
+    centerText(h - 2, "Installation complete. Ready for reboot.", 0xFFFFFF)
+    os.sleep(2)
+    os.execute("reboot")
+  elseif ver == 2 then
+    print("-- 1/4 CREATING DIRECTORIES --")
+    print("checking for /sys/apps")
+    if fs.exists("/sys/apps") and fs.isDirectory("/sys/apps") then
+      print("/sys/apps exists, skipping...")
+    else
+      print("/sys/apps does not exist, creating...")
+      fs.makeDirectory("/sys/apps")
+    end
+    print("checking for /sys/util")
+    if fs.exist("/sys/util") and fs.isDirectory("/sys/util") then
+      print("/sys/util exists, skipping...")
+    else
+      print("/sys/util does not exist, creating...")
+      fs.makeDirectory("/sys/util")
+    end
+    print("checking for /sys/env")
+    if fs.exists("/sys/env") and fs.isDirectory("/sys/env") then
+      print("/sys/env exists, skipping...")
+    else
+      print("/sys/env does not exist, creating...")
+      fs.makeDirectory("/sys/env")
+    end
+    print("-- 2/4 DOWNLOADING LIBRARIES --")
+    print("centerText.lua -> /lib/centerText.lua")
+    os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/lib/centerText.lua /lib/centerText.lua")
+    print("-- 3/4 DOWNLOADING SYSTEM --")
+    print("main.lua -> /sys/env/main.lua")
+    os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/env/main.lua /sys/env/main.lua")
+    print("file_manager.lua -> /sys/apps/file_manager.lua")
+    os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/app/file_manager.lua /sys/apps/file_manager.lua")
+    print("installer.lua -> /sys/apps/installer.lua")
+    os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/app/installer.lua /sys/apps/installer.lua")
+    print("program_installer.lua -> /sys/apps/program_installer.lua")
+    os.execute("wget https://github.com/Tavyza/TherOS/blob/bleeding-edge/sys/app/installer.lua /sys/apps/program_installer.lua")
+    print("therterm.lua -> /sys/util/therterm.lua")
+    os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/util/therterm.lua /sys/util/therterm.lua")
+    print("-- 4/4 GRAPPING BOOT --")
+    print("removing shell starter...")
+    fs.remove("/boot/94_shell.lua")
+    print("systempuller.lua -> /boot/94_systempuller.lua")
+    os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/systempuller.lua /boot/94_systempuller.lua")
+    print("Installation finished! A reboot is required to get the system set up. Would you like to reboot now?")
+    io.write("y/n -> ")
+    rb = io.read()
+    if rb == "y" then
+      shutdown(reboot)
+    else
+      os.exit()
+    end
   end
-  print("downloading main menu...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/main.lua /home/bin/main.lua")
-  print("downloading file manager...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/file_manager.lua /home/bin/file_manager.lua")
-  print("downloading program installer...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/program_installer.lua /home/bin/program_installer.lua")
-  print("downloading command prompt...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/command_prompt.lua /home/bin/command_prompt.lua")
-  print("downloading file creator...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/create_file.lua /home/bin/create_file.lua")
-  print("downloading OS installer...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/installer.lua /home/bin/installer.lua")
-  print("downloading TherOS text adventure...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/hello.lua /home/bin/hello.lua")
-  print("downloading changelog.txt...")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/changelog.txt /home/bin/changelog.txt")
-  print("replacing .shrc")
-  os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/.shrc /home/.shrc")
-  centerText(h - 2, "Installation complete. Ready for reboot.", 0xFFFFFF)
-  os.sleep(2)
-  os.execute("reboot")
 end
 
 local function installSeparateProgram()
