@@ -78,7 +78,7 @@ local function installFromGithub()
   print("2 - TherOS bleeding edge (may contain bugs!)")
   io.write("-> ")
   ver = io.read()
-  if ver == 1 then
+  if ver == "1" then
     if fs.exists("/home/bin") and fs.isDirectory("/home/bin") then
       print("'bin' directory detected, proceeding...")
     else
@@ -107,7 +107,7 @@ local function installFromGithub()
     centerText(h - 2, "Installation complete. Ready for reboot.", 0xFFFFFF)
     os.sleep(2)
     os.execute("reboot")
-  elseif ver == 2 then
+  elseif ver == "2" then
     print("-- 1/4 CREATING DIRECTORIES --")
     print("checking for /sys/apps")
     if fs.exists("/sys/apps") and fs.isDirectory("/sys/apps") then
