@@ -137,7 +137,6 @@ while true do
     elseif choice == 3 then
       installSeparateProgram()
     elseif choice == 4 then
-        os.execute("sh")
         break
     end
     installerMenu()
