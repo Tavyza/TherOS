@@ -16,6 +16,3 @@ while true do
     os.execute(command)
   end
 end
-
-print("exiting command prompt")
-os.execute("sh")

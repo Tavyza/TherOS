@@ -57,7 +57,7 @@ while true do
 
     local _, _, _, y, _, _ = e.pull("touch")
     if y >= h - 1 then
-        os.execute("sh")
+        break
     end
     local choice = math.floor((y - 3) / 1) + 1
 
