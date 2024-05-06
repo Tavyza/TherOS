@@ -12,8 +12,9 @@ while true do
     print("-- HELP --")
     print("Commands: \nhelp - Shows this menu\nexit - closes the command prompt")
     print("-- HELP --")
+  else
+    os.execute(command)
   end
-  os.execute(command)
 end
 
 print("exiting command prompt")
