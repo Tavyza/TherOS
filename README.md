@@ -1,9 +1,7 @@
 # TherOS
 Lightweight window manager for OpenOS
 
-WARNING -- BLEEDING EDGE BRANCH -- EXPECT BUGS
-
-Please report all bugs.
+-- WARNING -- BLEEDING EDGE BRANCH -- EXPECT BUGS
 
 ## INSTALLATION
 
@@ -11,11 +9,9 @@ Please report all bugs.
 
 2 - Reboot
 
-3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/apps/installer.lua``` in the shell
+3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/app/installer.lua && installer``` in the shell
 
-4 - Run ```installer``` in the shell
-
-5 - Install from github
+4 - Install from github
 
 Congratulations! you installed TherOS.
 
