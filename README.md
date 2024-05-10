@@ -1,6 +1,8 @@
 # TherOS
 Lightweight window manager for OpenOS
 
+-- WARNING -- BLEEDING EDGE BRANCH -- EXPECT BUGS
+
 ## INSTALLATION
 
 1 - Install OpenOS onto your computer

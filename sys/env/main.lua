@@ -4,19 +4,16 @@ local c = require("computer")
 local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
+local centerText = require("centerText")
+
+local appdir = "/sys/apps"
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
 
-local function centerText(y, text, color)
-    local x = math.floor(w / 2 - #text / 2) -- Ensure x is an integer
-    gpu.setForeground(color)
-    gpu.set(x, y, text)
-end
-
 local function updateOptions()
     local luaFiles = {}
-    for file in fs.list("home/bin") do
+    for file in fs.list("/sys/apps") do
         if (file:sub(-4) == ".lua" or file:sub(-4) == ".txt") and file ~= "main.lua" then
             table.insert(luaFiles, file:sub(1, -5))
         end
@@ -27,11 +24,8 @@ end
 local function displaySystemInfo()
     local memCap = math.floor(c.totalMemory() / 1000)
     local memUsed = math.floor(memCap - (c.freeMemory() / 1000))
-    local ramUnitCap = memCap >= 1000 and "MB" or "KB"
-    local ramUnitUsed = memUsed >= 1000 and "MB" or "KB"
-
-    centerText(h - 2, "Total RAM: " .. memCap .. " " .. ramUnitCap, 0xFFFFFF)
-    centerText(h - 1, "Used RAM: " .. memUsed .. " " .. ramUnitUsed, 0xFFFFFF)
+    centerText(h - 2, "Total RAM: " .. memCap, 0xFFFFFF)
+    centerText(h - 1, "Used RAM: " .. memUsed, 0xFFFFFF)
 end
 
 local function displayMenu(options, topText)
@@ -46,7 +40,7 @@ end
 local options = updateOptions()
 table.insert(options, "reboot")
 table.insert(options, "shutdown")
-local topText = "TherOS 0.2.2 - Beta Version"
+local topText = "TherOS 1.0.0 - Full release"
 
 displayMenu(options, topText)
 
@@ -61,7 +55,7 @@ while true do
         elseif selectedOption == "shutdown" then
             c.shutdown()
         else
-            os.execute("/home/bin/" .. selectedOption .. ".lua")
+            os.execute(appdir .. "/" .. selectedOption)
             displayMenu(options, topText)
         end
     end

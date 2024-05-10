@@ -4,15 +4,10 @@ local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
 local keyboard = require("keyboard")
+local centerText = require("centerText")
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
-
-local function centerText(y, text, color)
-    local x = math.floor(w / 2 - #text / 2)
-    gpu.setForeground(color)
-    gpu.set(x, y, text)
-end
 
 local function listFiles(currentPath)
     local files = {"../", "./"}
@@ -27,8 +22,12 @@ local function displayFiles(files, currentPath)
     gpu.fill(1, 1, w, h, " ")
     centerText(1, "File Manager - " .. currentPath, 0xFFFFFF)
     for i, file in ipairs(files) do
-        local color = (file == "../" or file == "./" or fs.isDirectory(currentPath .. file)) and 0x0000FF or 0x00FF00
-        centerText(3 + (i - 1) * 2, i .. ". " .. file, color)
+        if fs.isDirectory(currentPath .. file) or file == "../" or file == "./" then
+          color = 0x0000FF
+        else
+          color = 0x00FF00
+        end
+        centerText(3 + (i - 1) * 1, file, color)
     end
 end
 
@@ -58,16 +57,17 @@ while true do
 
     local _, _, _, y, _, _ = e.pull("touch")
     if y >= h - 1 then
-        os.execute("sh")
+        break
     end
-    local choice = math.floor((y - 3) / 2) + 1
+    local choice = math.floor((y - 3) / 1) + 1
 
     if choice >= 1 and choice <= #files and not optionsDisplayed then
         local selectedFile = getFullPath(currentPath, files[choice])
+        print(selectedFile)
         if fs.isDirectory(selectedFile) then
           if keyboard.isKeyDown(0x2A) == true then
             optionsDisplayed = true
-            local options = {"Open", "Delete"}
+            local options = {"Open", "Copy", "Delete"}
             local optionSpacing = 2
             local startLine = h / 2 - (#options * optionSpacing) / 2
             for i, option in ipairs(options) do
@@ -81,16 +81,21 @@ while true do
               print("Opening directory")
               currentPath = selectedFile
             elseif option == 2 then
+              print("Where would you like to copy this directory? This will copy all files within it.")
+              io.write("LOCATION -> ")
+              copDes = io.read()
+              fs.copy(selectedFile, copDes)
+            elseif option == 3 then
               print("Are you sure you want to delete this directory? This will also remove all items inside of it!")
               io.write("y/n -> ")
               confirm = io.read()
               if confirm == "y" then
-                os.execute("rm -rf " .. selectedFile)
+                fs.remove(selectedFile)
               else
                 print("Removal cancelled")
               end
+              optionsDisplayed = false
             end
-            optionsDisplayed = false
           else
           currentPath = selectedFile
           end
@@ -137,5 +142,30 @@ while true do
             end
             optionsDisplayed = false
         end
+    else
+      optionsDisplayed = true
+      local options = {"New file", "New directory"}
+      local optionSpacing = 2
+      local startLine = h / 2 - (#options * optionSpacing) / 2
+      for i, option in ipairs(options) do
+        centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
+      end
+
+      local _, _, _, yOption, _, _ = e.pull("touch")
+      local option = math.floor((yOption - startLine) / optionSpacing) + 1
+      print("Selected option " .. option)
+      if option == 1 then
+        print("New file name (INCLUDE EXTENTION)")
+        io.write("-> ")
+        newFile = io.read()
+        os.execute("touch " .. currentPath .. "/" .. newFile)
+      elseif option == 2 then
+        print("New directory name")
+        io.write("-> ")
+        newDir = io.read()
+        os.execute("mkdir " .. currentPath .. "/" .. newDir)
+        -- os.sleep(2) debug
+      end
+      optionsDisplayed = false                
     end
 end

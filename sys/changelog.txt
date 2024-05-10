@@ -1,15 +1,12 @@
--- TherOS 0.2.2 --
+-- TherOS 1.0.0 --
 CHANGELOG
 
 ADDED
-- File manager can manage directories
-- add help command to command prompt
+- merged file creator and file manager into 1 app
+- you can now create directories in the file manager
 
 PLANNED for 1.0.0
-- bring rest of apps to newer standards
 - make a new init.lua and start shifting away from OpenOS
-- merge file creator and file manager into 1 app
-- the file manager needs a directory creation thing
 - add configuration to the installation process
 - make settings menu
 - make a whole load of libraries
