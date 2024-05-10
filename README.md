@@ -9,7 +9,7 @@ Lightweight window manager for OpenOS
 
 2 - Reboot
 
-3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/app/installer.lua && installer``` in the shell
+3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/app/installer.lua && installer``` in the shell
 
 4 - Install from github
 
