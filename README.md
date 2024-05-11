@@ -1,5 +1,5 @@
 # TherOS
-Lightweight window manager for OpenOS
+Lightweight OS for OpenComputers
 
 ## INSTALLATION
 
