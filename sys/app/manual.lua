@@ -1,7 +1,7 @@
 -- System manual for TherOS
 ::uh::
 print("-- MANUAL --")
-io.write("1. Installing\n2. File manager\n3. TherTerm\n4. Where is everything???\n5. Bug reporting and feature suggestion\n-> ")
+io.write("1. Installing\n2. File manager\n3. TherTerm\n4. Where is everything???\n5. Bug reporting and feature suggestion\nType 'exit' to exit\n-> ")
 chs = io.read()
 if chs == "1" then
   print("- INSTALLATION -")
@@ -32,6 +32,9 @@ elseif chs == "5" then
   print("- Bug reporting and feature suggestion -")
   print("All bug reporting and feature suggestions should go in the \"issues\" tab in github. Note that i will not be able to fix everything immediately.")
   print("- Bug reporting and feature suggestion -")
+  goto uh
+elseif chs == "exit" then
+  os.exit()
 else
   print("Not a valid option!")
   goto uh
