@@ -24,8 +24,8 @@ end
 local function displaySystemInfo()
     local memCap = math.floor(c.totalMemory() / 1000)
     local memUsed = math.floor(memCap - (c.freeMemory() / 1000))
-    centerText(h - 2, "Total RAM: " .. memCap, 0xFFFFFF)
-    centerText(h - 1, "Used RAM: " .. memUsed, 0xFFFFFF)
+    centerText(h - 2, "Total RAM: " .. memCap .. " KB", 0xFFFFFF)
+    centerText(h - 1, "Used RAM: " .. memUsed .. " KB", 0xFFFFFF)
 end
 
 local function displayMenu(options, topText)
@@ -40,7 +40,7 @@ end
 local options = updateOptions()
 table.insert(options, "reboot")
 table.insert(options, "shutdown")
-local topText = "TherOS 1.0.0 - Full release"
+local topText = "TherOS 1.0.1"
 
 displayMenu(options, topText)
 
