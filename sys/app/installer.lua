@@ -15,7 +15,7 @@ local function centerText(y, text, color)
 end
 
 local function installerMenu()
-    local options = {"Install TherOS from floppy (DEPRICATED)", "Install/update TherOS from GitHub", "Install a Separate Program from floppy", "Exit Installer"}
+    local options = {"Install TherOS from floppy (DEPRICATED)", "Install/update TherOS from GitHub", "Update Installer from GitHub", "Install a Separate Program from floppy", "Exit Installer"}
     t.clear()
     gpu.fill(1, 1, w, h, " ")
     centerText(1, "TherOS 0.2.0 Installer", 0xFFFFFF)
@@ -188,6 +188,13 @@ local function installFromGithub()
   end
 end
 
+local function updateInstaller()
+    print("Pulling new installer and overwriting...")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/app/installer.lua /sys/apps/installer.lua")
+    print("Finished. Exiting...")
+    os.exit()
+end
+
 local function installSeparateProgram()
   print("Please type the drive ID. you can find this by leaving the screen, hovering over the drive, and looking at the first 3 characters of the long string in the tooltip of the drive (the thing with the name and stuff)")
   io.write("drive ID -> ")
@@ -217,8 +224,10 @@ while true do
     elseif choice == 2 then
         installFromGithub()
     elseif choice == 3 then
-      installSeparateProgram()
+        updateInstaller()
     elseif choice == 4 then
+        installSeparateProgram()
+    elseif choice == 5 then
         break
     end
     installerMenu()
