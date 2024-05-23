@@ -18,7 +18,7 @@ local function installerMenu()
     local options = {"Install TherOS from floppy (DEPRICATED)", "Install/update TherOS from GitHub", "Update Installer from GitHub", "Install a Separate Program from floppy", "Exit Installer"}
     t.clear()
     gpu.fill(1, 1, w, h, " ")
-    centerText(1, "TherOS 0.2.0 Installer", 0xFFFFFF)
+    centerText(1, "TherOS 1.0.1 Installer", 0xFFFFFF)
     for i, option in ipairs(options) do
         centerText(3 + (i - 1) * 2, option, 0xFFFFFF)
     end
