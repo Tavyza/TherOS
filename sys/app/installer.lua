@@ -82,7 +82,7 @@ local function installFromGithub()
   print("!! ATTENTION !! BY INSTALLING THEROS, YOU UNDERSTAND THAT THIS SYSTEM WILL NO LONGER OPEN THE SHELL ON BOOT.")
   io.write("Do you want to continue having read the notice above? yes i do / n -> ")
   confirm = io.read()
-  if ver == "1" and confirm = "yes i do" then
+  if ver == "1" and confirm == "yes i do" then
    print("-- 1/4 CREATING DIRECTORIES --")
     print("checking for /sys/apps")
     if fs.exists("/sys/apps") and fs.isDirectory("/sys/apps") then
@@ -136,7 +136,7 @@ local function installFromGithub()
     else
       os.exit()
     end
-  elseif ver == "2" and confirm = "yes i do" then
+  elseif ver == "2" and confirm == "yes i do" then
     print("-- 1/4 CREATING DIRECTORIES --")
     print("checking for /sys/apps")
     if fs.exists("/sys/apps") and fs.isDirectory("/sys/apps") then
