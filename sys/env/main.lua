@@ -45,18 +45,34 @@ local topText = "TherOS 1.0.1"
 displayMenu(options, topText)
 
 while true do
-    local _, _, x, y, _, _ = e.pull("touch")
+    local uptime = c.uptime()
+    if uptime - lastAppUpdate >= 10 then
+        options = updateOptions()
+        table.insert(options, "reboot")
+        table.insert(options, "shutdown")
+        lastAppUpdate = uptime
+        displayMenu(options, topText)
+    end
 
-    local choice = math.floor((y - 3) / 2) + 1
-    if choice >= 1 and choice <= #options then
-        local selectedOption = options[choice]
-        if selectedOption == "reboot" then
-            os.execute("reboot")
-        elseif selectedOption == "shutdown" then
-            c.shutdown()
-        else
-            os.execute(appdir .. "/" .. selectedOption)
-            displayMenu(options, topText)
+    if uptime - lastMemUpdate >= 1 then
+        displaySystemInfo()
+        lastMemUpdate = uptime
+    end
+
+    local event = {e.pull(1)}
+    if event[1] == "touch" then
+        local _, _, x, y = table.unpack(event)
+        local choice = math.floor((y - 3) / 2) + 1
+        if choice >= 1 and choice <= #options then
+            local selectedOption = options[choice]
+            if selectedOption == "reboot" then
+                c.shutdown(true)
+            elseif selectedOption == "shutdown" then
+                c.shutdown()
+            else
+                os.execute(appdir .. "/" .. selectedOption)
+                displayMenu(options, topText)
+            end
         end
     end
 end
