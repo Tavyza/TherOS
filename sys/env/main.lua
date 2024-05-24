@@ -44,6 +44,9 @@ local topText = "TherOS 1.0.1"
 
 displayMenu(options, topText)
 
+local lastAppUpdate = c.uptime()
+local lastMemUpdate = c.uptime()
+
 while true do
     local uptime = c.uptime()
     if uptime - lastAppUpdate >= 10 then
