@@ -1,11 +1,14 @@
 -- System manual for TherOS
-::uh::
+
 print("-- MANUAL --")
-io.write("1. Installing\n2. File manager\n3. TherTerm\n4. Where is everything???\n5. Bug reporting and feature suggestion\n-> ")
+io.write("1. Installing\n2. File manager\n3. TherTerm\n4. Where is everything???\n5. Bug reporting and feature suggestion\nType 'exit' to exit\n")
+::uh::
+io.write("-> ")
 chs = io.read()
 if chs == "1" then
   print("- INSTALLATION -")
   print("To install or update TherOS, run the installer program that comes packaged with TherOS and choose your desired version. The bleeding edge branch will always be the most up-to-date version, though it may be buggy. If you do not have access to the internet from your computer, and have a floppy with TherOS on it, you are gonna have to change the drive ID in the installer code.")
+  print("Make sure to update the installer before updating your system.")
   print("- INSTALLATION -")
   goto uh
 elseif chs == "2" then
@@ -32,6 +35,9 @@ elseif chs == "5" then
   print("- Bug reporting and feature suggestion -")
   print("All bug reporting and feature suggestions should go in the \"issues\" tab in github. Note that i will not be able to fix everything immediately.")
   print("- Bug reporting and feature suggestion -")
+  goto uh
+elseif chs == "exit" then
+  os.exit()
 else
   print("Not a valid option!")
   goto uh

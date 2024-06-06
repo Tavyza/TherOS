@@ -24,8 +24,8 @@ end
 local function displaySystemInfo()
     local memCap = math.floor(c.totalMemory() / 1000)
     local memUsed = math.floor(memCap - (c.freeMemory() / 1000))
-    centerText(h - 2, "Total RAM: " .. memCap, 0xFFFFFF)
-    centerText(h - 1, "Used RAM: " .. memUsed, 0xFFFFFF)
+    centerText(h - 2, "Total RAM: " .. memCap .. " KB", 0xFFFFFF)
+    centerText(h - 1, "Used RAM: " .. memUsed .. " KB", 0xFFFFFF)
 end
 
 local function displayMenu(options, topText)
@@ -40,23 +40,42 @@ end
 local options = updateOptions()
 table.insert(options, "reboot")
 table.insert(options, "shutdown")
-local topText = "TherOS 1.0.0 - Full release"
+local topText = "TherOS 1.0.1"
 
 displayMenu(options, topText)
 
-while true do
-    local _, _, x, y, _, _ = e.pull("touch")
+local lastAppUpdate = c.uptime()
+local lastMemUpdate = c.uptime()
 
-    local choice = math.floor((y - 3) / 2) + 1
-    if choice >= 1 and choice <= #options then
-        local selectedOption = options[choice]
-        if selectedOption == "reboot" then
-            os.execute("reboot")
-        elseif selectedOption == "shutdown" then
-            c.shutdown()
-        else
-            os.execute(appdir .. "/" .. selectedOption)
-            displayMenu(options, topText)
+while true do
+    local uptime = c.uptime()
+    if uptime - lastAppUpdate >= 10 then
+        options = updateOptions()
+        table.insert(options, "reboot")
+        table.insert(options, "shutdown")
+        lastAppUpdate = uptime
+        displayMenu(options, topText)
+    end
+
+    if uptime - lastMemUpdate >= 1 then
+        displaySystemInfo()
+        lastMemUpdate = uptime
+    end
+
+    local event = {e.pull(1)}
+    if event[1] == "touch" then
+        local _, _, x, y = table.unpack(event)
+        local choice = math.floor((y - 3) / 2) + 1
+        if choice >= 1 and choice <= #options then
+            local selectedOption = options[choice]
+            if selectedOption == "reboot" then
+                c.shutdown(true)
+            elseif selectedOption == "shutdown" then
+                c.shutdown()
+            else
+                os.execute(appdir .. "/" .. selectedOption)
+                displayMenu(options, topText)
+            end
         end
     end
 end
