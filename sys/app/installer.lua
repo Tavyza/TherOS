@@ -75,7 +75,7 @@ local function installTherOS()
 end
 
 local function installFromGithub()
-  print("Welcome to the TherOS installer version 1.0.1")
+  print("Welcome to the TherOS installer version 1.0.2")
   print("1 - TherOS stable release")
   print("2 - TherOS bleeding edge (may contain bugs!)")
   io.write("-> ")
