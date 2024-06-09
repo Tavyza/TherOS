@@ -104,7 +104,7 @@ while true do
           end
         else
             optionsDisplayed = true
-            local options = {"Run", "Edit", "Move/Rename", "Copy", "Delete", "Cancel"}
+            local options = {"Run", "Edit", "Copy", "Move/Rename", "Delete", "Cancel"}
             local optionSpacing = 2
             local startLine = h / 2 - (#options * optionSpacing) / 2
             for i, option in ipairs(options) do

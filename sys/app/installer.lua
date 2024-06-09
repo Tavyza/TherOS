@@ -4,7 +4,6 @@ local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
 local c = require("computer")
-local i = require("internet")
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
@@ -16,62 +15,13 @@ local function centerText(y, text, color)
 end
 
 local function installerMenu()
-    local options = {"Install TherOS from floppy (DEPRICATED)", "Install/update TherOS from GitHub", "Update Installer from GitHub", "Install a Separate Program from floppy", "Exit Installer"}
+    local options = {"Install/update TherOS from GitHub", "Update Installer from GitHub", "Install a Separate Program from floppy", "Exit Installer"}
     t.clear()
     gpu.fill(1, 1, w, h, " ")
     centerText(1, "TherOS 1.0.2 Installer", 0xFFFFFF)
     for i, option in ipairs(options) do
         centerText(3 + (i - 1) * 2, option, 0xFFFFFF)
     end
-end
-
-local function installTherOS()
-  print("Welcome to the TherOS installer version 0.2.2. Please wait while the program gathers the system files.")
-  local scriptPath = "/mnt/---"
-  local scriptId = "---" --modify if this changes to a seperate floppy
-  print("drive id is " .. scriptId)
-  print("Script path:", scriptPath)
-  for entry in fs.list(scriptPath) do
-    local source = scriptPath
-    local dest = "/home/bin"
-    if fs.exists("/home/bin") and fs.isDirectory("/home/bin") then
-      print("'bin' directory detected, proceeding...")
-    else
-      print("'bin' directory not detected, creating...")
-      os.execute("mkdir /home/bin")
-      print("created 'bin' directory (used for apps)")
-    end
-    print("copying main menu...")
-    os.execute("cp /mnt/" .. scriptId .. "/main.lua  " .. dest)
-    print("done")
-    print("copying file manager...")
-    os.execute("cp /mnt/" .. scriptId .. "/file_manager.lua  " .. dest)
-    print("done")
-    print("copying program installer...")
-    os.execute("cp /mnt/" .. scriptId .. "/program_installer.lua  " .. dest)
-    print("done")
-    print("copying command prompt...")
-    os.execute("cp /mnt/" .. scriptId .. "/command_prompt.lua  " .. dest)
-    print("done")
-    print("copying file creator...")
-    os.execute("cp /mnt/" .. scriptId .. "/create_file.lua  " .. dest)
-    print("done")
-    print("copying OS installer...")
-    os.execute("cp /mnt/" .. scriptId .. "/installer.lua  " .. dest)
-    print("done")
-    print("copying TherOS text adventure...")
-    os.execute("cp /mnt/" .. scriptId .. "/hello.lua  " .. dest)
-    print("done")
-    print("copying changelog.txt...")
-    os.execute("cp /mnt/" .. scriptId .. "/changelog.txt " .. dest)
-    print("done")
-    print("copying new .shrc...")
-    os.execute("cp /mnt/" .. scriptId .. "/.shrc " .. "/home")
-    print("done")
-  end
-    centerText(h - 2, "Installation complete. Ready for reboot.", 0xFFFFFF)
-    os.sleep(2)
-    os.execute("reboot")
 end
 
 local function installFromGithub()
@@ -228,14 +178,12 @@ while true do
     local _, _, _, y, _, _ = e.pull("touch")
     local choice = math.floor((y - 3) / 2) + 1
     if choice == 1 then
-        installTherOS()
-    elseif choice == 2 then
         installFromGithub()
-    elseif choice == 3 then
+    elseif choice == 2 then
         updateInstaller()
-    elseif choice == 4 then
+    elseif choice == 3 then
         installSeparateProgram()
-    elseif choice == 5 then
+    elseif choice == 4 then
         break
     end
     installerMenu()
