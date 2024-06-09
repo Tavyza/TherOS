@@ -1,13 +1,29 @@
--- TherOS 1.0.1 --
-CHANGELOG
+|==========================================|
+|       -- THEROS VERSION 1.0.2 --         |
+|==========================================|
 
-ADDED
-- Confirmation added to installer
-- Re-added changelog to the installation
-- Made the main environment refresh automatically and removed the blank file
+-- ADDED --
 
-FIXED
-- Manual will no longer repeat menu options.
+- Added the filesystem extention library to the installation
+
+-- FIXED --
+
+- Some file manager options relying on os.execute that did not need to rely on os.execute
+- Made directory structure of Github repo make sense
+
+NOTE: there will probably be a few minor releases in 1.0.X, if issues come up or i add more small features.
+
+|==========================================|
+|        -- PLANNED FOR 1.1.0 --           |
+|==========================================|
+- Getting ready for actual OS stuff. This will involve taking away some reliance from OpenOS libraries and commands.
+  - New init.lua
+  - Custom boot scripts
+- Configuration stuffs (so you can set background/text color and allat easier)
+
+<!!> Note: this planned release will be pushed into bleeding-edge before making it to the main branch. <!!>
+
+=========================================================================================================================
 
 -- PLEASE RE-INSTALL/UPDATE INSTALLER TO INSTALL EVERYTHING IN NEW VERSIONS --
 
