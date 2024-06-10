@@ -148,7 +148,7 @@ end
 
 local function updateInstaller()
     print("Pulling new installer and overwriting...")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/app/installer.lua /sys/apps/installer.lua")
+    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua /sys/apps/installer.lua")
     print("Finished. Exiting...")
     os.exit()
 end
