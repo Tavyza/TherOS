@@ -5,7 +5,7 @@ local gpu = component.gpu
 local w, h = gpu.getResolution()
 
 function centerText(y, text, color)
-    if color = nil then
+    if color == nil then
         color = 0xFFFFFF
     end
     local x = math.floor(w / 2 - #text / 2)
