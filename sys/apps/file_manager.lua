@@ -67,7 +67,7 @@ while true do
         if fs.isDirectory(selectedFile) then
           if keyboard.isKeyDown(0x2A) == true then
             optionsDisplayed = true
-            local options = {"Open", "Copy", "Delete"}
+            local options = {"Open","Move/Rename", "Copy", "Delete"}
             local optionSpacing = 2
             local startLine = h / 2 - (#options * optionSpacing) / 2
             for i, option in ipairs(options) do
@@ -81,13 +81,16 @@ while true do
               print("Opening directory")
               currentPath = selectedFile
             elseif option == 2 then
+              print("New path (DOES NOT WORK ACROSS DIFFERENT FILESYSTEMS)")
+              io.write("LOCATION -> ")
+              fs.rename(selectedFile, io.read())
+            elseif option == 3 then
               print("Where would you like to copy this directory? This will copy all files within it.")
               io.write("LOCATION -> ")
-              copDes = io.read()
-              fs.copy(selectedFile, copDes)
-            elseif option == 3 then
+              fs.copy(selectedFile, io.read())
+            elseif option == 4 then
               print("Are you sure you want to delete this directory? This will also remove all items inside of it!")
-              io.write("y/n -> ")
+              io.write("y/N -> ")
               confirm = io.read()
               if confirm == "y" then
                 fs.remove(selectedFile)
@@ -100,45 +103,49 @@ while true do
           currentPath = selectedFile
           end
         else
-            optionsDisplayed = true
-            local options = {"Run", "Edit", "Delete", "Move/Rename", "Copy", "Cancel"}
-            local optionSpacing = 2
-            local startLine = h / 2 - (#options * optionSpacing) / 2
-            for i, option in ipairs(options) do
-                centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
+          optionsDisplayed = true
+          local options = {"Run", "Edit", "Copy", "Move/Rename", "Delete", "Cancel"}
+          local optionSpacing = 2
+          local startLine = h / 2 - (#options * optionSpacing) / 2
+          for i, option in ipairs(options) do
+            centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
 
+          end
+
+          local _, _, _, yOption, _, _ = e.pull("touch")
+
+          local option = math.floor((yOption - startLine) / optionSpacing) + 1
+          print("Selected option: " .. option)
+
+          if option == 1 then
+            print("Executing file: " .. selectedFile) 
+            local ok, err = pcall(dofile(selectedFile))
+            if not ok and err then
+              print(err)
+              io.write("ok")
+              io.read()
             end
-
-            local _, _, _, yOption, _, _ = e.pull("touch")
-
-            local option = math.floor((yOption - startLine) / optionSpacing) + 1
-            print("Selected option: " .. option)
-
-            if option == 1 then
-                print("Executing file: " .. selectedFile) -- Debug print
-                os.execute(selectedFile)
             elseif option == 2 then
-                print("Editing file: " .. selectedFile) -- Debug print
-                os.execute("edit " .. selectedFile)
+              print("Editing file: " .. selectedFile) 
+              os.execute("edit " .. selectedFile)
             elseif option == 3 then
-                print("Delete " .. selectedFile) -- Debug print
-                print("Are you sure you want to remove this file?")
-                io.write("y/n -> ")
-                if io.read() == "y" then
-                    os.execute("rm " .. selectedFile)
-                else
-                    print("File not deleted.")
-                end
+              print("Enter copy destination: ")
+              io.write("LOCATION -> ")
+              fs.copy(selectedFile, io.read())
             elseif option == 4 then
-                print("Enter new path/name: ") -- Debug print
-                local newPath = io.read()
-                print("Moving/renaming to: " .. newPath) -- Debug print
-                os.execute("mv " .. selectedFile .. " " .. newPath)
+              print("Enter new path/name: ") 
+              io.write("LOCATION -> ")
+              print("Moving/renaming to: " .. io.read()) 
+              fs.rename(selectedFile, io.read())
             elseif option == 5 then
-                print("Enter copy destination: ") -- Debug print
-                local copdes = io.read()
-                print("Copying to: " .. copdes) -- Debug print
-                os.execute("cp " .. selectedFile .. " " .. copdes)
+              print("Delete " .. selectedFile) 
+              print("Are you sure you want to remove this file?")
+              io.write("y/N -> ")
+              if io.read() == "y" then
+                fs.remove(selectedFile)
+              else
+                print("File not deleted.")
+              end
             end
             optionsDisplayed = false
         end
@@ -158,13 +165,16 @@ while true do
         print("New file name (INCLUDE EXTENTION)")
         io.write("-> ")
         newFile = io.read()
-        os.execute("touch " .. currentPath .. "/" .. newFile)
+        local file, err = fs.open(currentPath .. "/" .. newFile, "w")
+        file:close()
+        if not file then
+          print(err)
+        end
       elseif option == 2 then
         print("New directory name")
-        io.write("-> ")
-        newDir = io.read()
-        os.execute("mkdir " .. currentPath .. "/" .. newDir)
-        -- os.sleep(2) debug
+        io.write("DIRECTORY -> ")
+        fs.makeDirectory(currentPath .. "/" .. io.read() .. "/") 
+        -- os.sleep(2) -- debug, i forget what for but i'll just leave this here
       end
       optionsDisplayed = false                
     end
