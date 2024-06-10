@@ -1,15 +1,13 @@
 |==========================================|
-|       -- THEROS VERSION 1.0.2 --         |
+|       -- THEROS VERSION 1.0.3 --         |
 |==========================================|
-
--- ADDED --
-
-- Added the filesystem extention library to the installation
 
 -- FIXED --
 
-- Some file manager options relying on os.execute that did not need to rely on os.execute
-- Made directory structure of Github repo make sense
+- File manager no longer exits when making a file
+- File manager will now place new files in the current directory
+- File manager will now place new directories in the current directory
+- Changed /sys/app/ in github to /sys/apps/ to reflect the actual directory name 
 
 NOTE: there will probably be a few minor releases in 1.0.X, if issues come up or i add more small features.
 

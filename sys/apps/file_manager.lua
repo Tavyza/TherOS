@@ -103,44 +103,49 @@ while true do
           currentPath = selectedFile
           end
         else
-            optionsDisplayed = true
-            local options = {"Run", "Edit", "Copy", "Move/Rename", "Delete", "Cancel"}
-            local optionSpacing = 2
-            local startLine = h / 2 - (#options * optionSpacing) / 2
-            for i, option in ipairs(options) do
-                centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
+          optionsDisplayed = true
+          local options = {"Run", "Edit", "Copy", "Move/Rename", "Delete", "Cancel"}
+          local optionSpacing = 2
+          local startLine = h / 2 - (#options * optionSpacing) / 2
+          for i, option in ipairs(options) do
+            centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
 
+          end
+
+          local _, _, _, yOption, _, _ = e.pull("touch")
+
+          local option = math.floor((yOption - startLine) / optionSpacing) + 1
+          print("Selected option: " .. option)
+
+          if option == 1 then
+            print("Executing file: " .. selectedFile) 
+            local ok, err = pcall(dofile(selectedFile))
+            if not ok and err then
+              print(err)
+              io.write("ok")
+              io.read()
             end
-
-            local _, _, _, yOption, _, _ = e.pull("touch")
-
-            local option = math.floor((yOption - startLine) / optionSpacing) + 1
-            print("Selected option: " .. option)
-
-            if option == 1 then
-                print("Executing file: " .. selectedFile) -- Debug print
-                os.execute(selectedFile)
             elseif option == 2 then
-                print("Editing file: " .. selectedFile) -- Debug print
-                os.execute("edit " .. selectedFile)
+              print("Editing file: " .. selectedFile) 
+              os.execute("edit " .. selectedFile)
             elseif option == 3 then
               print("Enter copy destination: ")
               io.write("LOCATION -> ")
               fs.copy(selectedFile, io.read())
             elseif option == 4 then
-                print("Enter new path/name: ") 
-                io.write("LOCATION -> ")
-                print("Moving/renaming to: " .. io.read()) 
-                fs.rename(selectedFile, io.read())
+              print("Enter new path/name: ") 
+              io.write("LOCATION -> ")
+              print("Moving/renaming to: " .. io.read()) 
+              fs.rename(selectedFile, io.read())
             elseif option == 5 then
-                print("Delete " .. selectedFile) -- Debug print
-                print("Are you sure you want to remove this file?")
-                io.write("y/N -> ")
-                if io.read() == "y" then
-                    fs.remove(selectedFile)
-                else
-                    print("File not deleted.")
-                end
+              print("Delete " .. selectedFile) 
+              print("Are you sure you want to remove this file?")
+              io.write("y/N -> ")
+              if io.read() == "y" then
+                fs.remove(selectedFile)
+              else
+                print("File not deleted.")
+              end
             end
             optionsDisplayed = false
         end
@@ -160,15 +165,16 @@ while true do
         print("New file name (INCLUDE EXTENTION)")
         io.write("-> ")
         newFile = io.read()
-        io.open(newFile, "w")
-        file:write("--placeholder--")
+        local file, err = fs.open(currentPath .. "/" .. newFile, "w")
         file:close()
-        os.execute("touch " .. currentPath .. "/" .. newFile)
+        if not file then
+          print(err)
+        end
       elseif option == 2 then
-        print("New directory name (include parent directories, if any)")
+        print("New directory name")
         io.write("DIRECTORY -> ")
-        fs.makeDirectory(io.read())
-        -- os.sleep(2) -- debug
+        fs.makeDirectory(currentPath .. "/" .. io.read() .. "/") 
+        -- os.sleep(2) -- debug, i forget what for but i'll just leave this here
       end
       optionsDisplayed = false                
     end
