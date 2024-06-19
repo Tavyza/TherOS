@@ -1,6 +1,8 @@
 # TherOS
 Lightweight OS for OpenComputers
 
+!! BLEEDING-EDGE BRANCH, EXPECT BUGS !!
+
 ## INSTALLATION
 
 TherOS requires:
