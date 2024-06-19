@@ -108,7 +108,7 @@ while true do -- loop to keep the program running
           gpu.fill(60, 20, 100, 30, " ")
           ct(h / 2, "DELETE CONFIRM FOR " .. selectedFile)
           ct((h / 2) + 1, "Are you sure you want to delete " .. selectedFile .. " and everything in it? This action cannot be reversed!")
-          t.setCursor(70, 22)
+          t.setCursor(70, 27)
           io.write("yes/N")
           if io.read() == "yes" then
             local ok, err = fs.remove(selectedFile)
@@ -137,7 +137,11 @@ while true do -- loop to keep the program running
       if optionChoice == 1 then -- run
         executeWithErrorHandling(selectedFile)
       elseif optionChoice == 2 then -- edit
-        executeWithErrorHandling("edit " .. selectedFile)
+        local ok, err = shell.execute("edit " .. selectedFile)
+        if not ok then
+          ct((h/2)+5,"Error editing " .. selectedFile .. ": " .. err, 0xFF0000)
+          io.read()
+        end
       elseif optionChoice == 3 then -- copy
         gpu.fill(60, 20, 100, 30, " ")
         ct(h / 2, "Type copy destination")
