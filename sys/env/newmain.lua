@@ -32,3 +32,7 @@ local function drawMenu()
 end
 
 drawMenu()
+
+while true do
+    local event = (event.pull())
+end
