@@ -1,20 +1,34 @@
-local event = require("event")
 local term = require("term")
-local component = require("component")
-local gpu = component.gpu
+local event = require("event")
+local gpu = require("component").gpu
 
-local options = {}
+local options = {
+    "test option one",
+    "test option two",
+    "test option three",
+    "platano"
+}
 
-table.insert(options, "test option one")
-table.insert(options, "test option two")
-table.insert(options, "test option three")
+local selected = 1
 
-while true do
-    local event = table.pack(event.pull())
-    local w, h = gpu.getResolution()
-    gpu.fill(1, 1, w, h, " ")
+local function drawMenu()
+    term.clear()
 
-    for _, option in ipairs(options) do
-        io.write(option)
+    for i, option in ipairs(options) do
+        if i == selected then
+            gpu.setForeground(0xFFFFFF)
+            gpu.setBackground(0x0000FF)
+        else
+            gpu.setForeground(0x000000)
+            gpu.setBackground(0xFFFFFF)
+        end
+        
+        term.setCursor(1, i)
+        term.write(option)
     end
+
+    gpu.setForeground(0x000000)
+    gpu.setBackground(0xFFFFFF)
 end
+
+drawMenu()
