@@ -1,0 +1,27 @@
+|==========================================|
+|      -- THEROS VERSION 1.1.2 --          |
+|==========================================|
+
+-- ADDED --
+
+- Configuration file
+- Rebuilt installer
+- System settings app
+- Version file
+
+-- FIXED --
+
+- Boot uses shell.execute instead of os.execute. (is this faster?)
+
+-- REMOVED --
+
+!!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
+
+
+=========================================================================================================================
+
+-- PLEASE RE-INSTALL/UPDATE INSTALLER TO INSTALL EVERYTHING IN NEW VERSIONS --
+
+-- make sure to put suggestions of what you want to see in the Github issues page! --
+
+Note that i am not spending much of my time on updating TherOS. Do not expect quick updates.
