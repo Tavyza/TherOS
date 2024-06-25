@@ -67,9 +67,10 @@ local function online()
       if fs.exists("/sys/apps/installer.lua") and installerversion ~= version then
         shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua")
         print("New installer pulled. Please close the installer and restart the installation process.")
-        io.write("ok -> ")
-        io.read()
-        os.exit()
+        io.write("ok / override -> ")
+        if io.read() ~= "override" then
+          os.exit()
+        end
       end
       centerText(math.floor(h / 2), "PREPPING INSTALLATION...")
       print("Pre-installation questions. Type \"skip\" to skip the questions.")
