@@ -1,14 +1,23 @@
 local fs = require("filesystem")
-local ct = require("centerText")
 local t = require("term")
 local gpu = require("component").gpu
 local e = require("event")
 local kb = require("keyboard")
 local shell = require("shell")
-
-::inthebeginning::
+local backgroundcolor, _, envtextcolor, fmfiletextcolor, fmdirtextcolor, _, _ = require("configlib")()
 
 local w, h = gpu.getResolution()
+
+local function ct(y, text, color)
+  if color == "" then
+    color = envtextcolor
+  end
+  t.setForeground(color)
+  gpu.set((w/2)-(#text/2), y, text)
+end
+::inthebeginning::
+t.setBackground(backgroundcolor)
+
 local currentDir = "/" -- sets to root dir at first, might change later
 
 local function listFiles(currentDir)
@@ -21,13 +30,13 @@ end
 
 local function displayFiles(files, currentDir) -- function to print out all files in the working directory
   t.clear()
-  ct(1, "File Manager 1.1 : " .. currentDir) -- top text, might change
+  ct(1, "File Manager 1.1 -- " .. currentDir) -- top text, might change
   for i, file in ipairs(files) do -- this just goes through the table
     local fullPath = fs.concat(currentDir, file)
-    if fs.isDirectory(fullPath) then -- i really don't like this being here because it just doesn't work half the time
-      color = 0x0000FF
+    if fs.isDirectory(fullPath) then -- i really don't like this being here because it just doesn't work half the time (counter note, it DOES work now)
+      color = fmdirtextcolor
     else
-      color = 0x00FF00
+      color = fmfiletextcolor
     end
     ct(3 + (i - 1), file, color) -- well this just... prints the files
   end

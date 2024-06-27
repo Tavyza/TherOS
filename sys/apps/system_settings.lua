@@ -3,6 +3,15 @@ local ct = require("centerText")
 local gpu = require("component").gpu
 local e = require("event")
 local w, h = gpu.getResolution()
+local backgroundcolor, _, envtextcolor, fmfiletextcolor, fmdirtextcolor, _, _ = require("configlib")()
+
+local function ct(y, text, color)
+  if color == "" then
+    color = envtextcolor
+  end
+  t.setForeground(color)
+  gpu.set((w/2)-(#text/2), y, text)
+end
 
 while true do
   t.clear()

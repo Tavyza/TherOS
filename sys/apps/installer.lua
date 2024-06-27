@@ -113,7 +113,7 @@ local function online()
       t.clear()
       centerText(math.floor(h / 2), "INSTALLING (2/2)...")
       local programs = {
-        "/lib/centerText.lua",
+        "/lib/configlib.lua",
         "/lib/filesystem_ext.lua",
         "/sys/apps/file_manager.lua",
         "/sys/apps/installer.lua",
