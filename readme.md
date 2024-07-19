@@ -18,3 +18,5 @@ Lighweight environment for OpenOS, with hopes of becoming a fully functional OS 
 
 -- Note --
 The current version is *NOT* in a functional state. The updater doesn't work and none of the apps have even basic functions. Download at your own risk.
+
+Also, this is not abandoned. i just took a short break.

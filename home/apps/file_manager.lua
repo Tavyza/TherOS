@@ -3,12 +3,14 @@ local gpu = require("component").gpu
 local e = require("event")
 local kb = require("keyboard")
 local ct = require("centertext")
-require("windowlib")
-require("/config/thercon")
+local th = require("theros")
+local fsu = require("fsutils")
+local shell = require("shell")
+local conf = require("conlib")
 
-local bkgclr, txtclr, _, _, fmdclr, fmfclr, _, trmdir = config()
+local bkgclr, txtclr, _, _, fmdclr, fmfclr, _, trmdir, editor = conf.general()
+local _, _, fmver = conf.version()
 
-local e = require("event")
 local function clamp(value, min, max)
   if value < min then
     return max
@@ -41,6 +43,12 @@ local function contextbar() -- loads a keybind bar at the bottom
     gpu.fill(1, h-2, w, h-2, " ")
     ct(h-2, contextbar, txtclr)
   end
+end
+
+local function errorprompt(message)
+  ct((h/2)-1, "-------------------------")
+  ct(h/2, message)
+  ct((h/2)+1, "-------------------------")
 end
 
 local function displayfiles(e)
@@ -76,12 +84,25 @@ local function displayfiles(e)
     selectedfile = " *" .. files[selection]
   end
 
-  if selectedFile ~= nil then
-    if fs.isDirectory(selectedFile) then
-      if e[1] == "key_down" and e[4] == kb.keys.r then
-        currentdir = selectedfile
-      elseif e[1] == "key_down" and e[4] == kb.keys.m then
+  local keydown = e[1] == "key_down"
 
+  if selectedfile ~= nil then
+    if fs.isDirectory(selectedfile) then
+      if keydown and e[4] == kb.keys.r then
+        currentdir = selectedfile
+      elseif keydown and e[4] == kb.keys.m then
+        fsu.movedir()
+    else
+      if keydown and e[4] == kb.keys.r then
+        local result, err = th.run(selectedfile)
+        if not result then
+          errorprompt(err)
+        end
+      elseif keydown and e[4] == kb.keys.e then
+        shell.execute(editor .. " " .. selectedfile)
+      elseif keydown and e[4] == kb.keys.x then
+      end
+    end
   end
 end
 

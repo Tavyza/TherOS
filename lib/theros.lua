@@ -1,8 +1,41 @@
+-- TherOS general lib
+require("conlib")
+local fs = require("filesystem")
 local gpu = require("component").gpu
 local w, h = gpu.getResolution()
-local e = require("event")
 
-function drawWindow(x, y, w, h, titletext)
+local theros = {}
+
+function theros.run(program)
+  if not fs.exists(program) then
+    return "", "FILE NOT FOUND (Does the file exist?)"
+  end
+  local prgm = ""
+  local file, reason = io.open(program, "r")
+  if not file then
+    return "", "ERROR: " .. reason
+  end
+  repeat
+    local chunk = file:read(math.huge)
+    if chunk then
+      prgm = prgm .. chunk
+    end
+  until not chunk
+  file:close()
+
+  local func, reason = load(prgm, "=" .. program)
+  if not func then
+    return "", "LOAD ERROR: " .. reason
+  end
+
+  local success, result = pcall(func)
+  if not success then
+    return "", "EXECUTE ERROR: " .. result
+  end
+  return result
+end
+
+function theros.dwindow(x, y, w, h, titletext)
   gpu.fill(x,y,w,1,"═") -- top
   gpu.fill(x,y+h-1,w,h,"═") -- bottom
   gpu.fill(x,y,1,h,"║") -- left
@@ -21,3 +54,5 @@ function drawWindow(x, y, w, h, titletext)
   --end
   return {x = x, y = y, w = w, h = h}
 end
+
+return theros
