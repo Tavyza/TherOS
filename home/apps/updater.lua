@@ -4,6 +4,8 @@
 local gpu = require("component").gpu
 local w, h = gpu.getResolution()
 local e = require("event")
+local kb = require("keyboard")
+local t = require("term")
 
 local function drawWindow(x, y, w, h, titletext) -- window lib
   gpu.fill(x,y,w,1,"═") -- top
@@ -42,10 +44,31 @@ end
 
 local function from_floppy()
   drawWindow(1, 1, w, h, "Updater -- Install TherOS from floppy")
+  ct(h/2, "Feature currently unavailable.")
+  io.read()
 end
 
 local function from_git()
   drawWindow(1, 1, w, h, "Updater -- Install TherOS from GitHub")
   ct(3, "Choose branch")
-  local branches = {"Main", "Bleeding Edge", "TherOS 1"}
+  local branches = {"Main", "Bleeding Edge"}
+  for i, branch in ipairs(branches) do
+    ct(2+i, branch)
+  end
+  local keydown = e[1] == "key_down"
+  if keydown and kb.keys.up then
+    local choice = choice - 1
+  elseif keydown and kb.keys.down then
+    local choice = choice + 1
+  elseif keydown and kb.keys.enter then
+    branch = choice
+  end
+  drawWindow((w/2)-10, (h/2)-2, (w/2)+10, (h/2)+2, "INSTALL CONFIRM")
+  local prompt = "Install TherOS?"
+  ct((h/2)-1, prompt)
+  t.setCursor((w/2)-4, (h/2))
+  io.write("Y/n -> ")
+  if io.read() == "n" then
+    os.exit()
+  end
 end

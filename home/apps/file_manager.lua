@@ -8,7 +8,7 @@ local fsu = require("fsutils")
 local shell = require("shell")
 local conf = require("conlib")
 
-local bkgclr, txtclr, _, _, fmdclr, fmfclr, _, trmdir, editor = conf.general()
+local bkgclr, txtclr, _, sloclr, fmdclr, fmfclr, _, trmdir, editor = conf.general()
 local _, _, fmver = conf.version()
 
 local function clamp(value, min, max)
@@ -50,6 +50,15 @@ local function errorprompt(message)
   ct(h/2, message)
   ct((h/2)+1, "-------------------------")
 end
+local function prompt(header, text)
+  ct((h/2)-2, "-------------------------")
+  ct((h/2)-1, header)
+  ct((h/2), text)
+  t.setCursor((w/2), (#"-------------------------"-#"-------------------------"))
+  input = io.read()
+  ct((h/2)+2, "-------------------------")
+  return input
+end
 
 local function displayfiles(e)
   local files = {
@@ -65,45 +74,53 @@ local function displayfiles(e)
       color = fmfclr
     end
     if i == selection then
-      if fs.isDirectory(files[selection]) then
-        gpu.setForeground(0x619EFF)
-      else
-        gpu.setForeground(0xFAA501)
-      end
+      gpu.setForeground(sloclr)
     end
     ct(2+i, file, color)
     gpu.set((w/2)-(#file/2), 2+i, file)
-    local selection = tostring(selection)
-    gpu.set((w/2)-1, h-1, selection)
+    gpu.set((w/2)-1, h-1, files[selection])
   end
   if e[1] == "key_down" and e[4] == kb.keys.up then
-    selection = selection - 1
+    selection = clamp(selection - 1, 1, #files)
   elseif e[1] == "key_down" and e[4] == kb.keys.down then
-    selection = selection + 1
+    selection = clamp(selection + 1, 1, #files)
   elseif e[1] == "key_down" and e[4] == kb.keys.enter then
-    selectedfile = " *" .. files[selection]
+    selectedfile = files[selection]
   end
 
   local keydown = e[1] == "key_down"
 
   if selectedfile ~= nil then
     if fs.isDirectory(selectedfile) then
-      if keydown and e[4] == kb.keys.r then
+      if e[1] == "key_down" and e[4] == kb.keys.r then
         currentdir = selectedfile
-      elseif keydown and e[4] == kb.keys.m then
+      elseif e[1] == "key_down" and e[4] == kb.keys.m then
         fsu.movedir()
     else
-      if keydown and e[4] == kb.keys.r then
+      if e[1] == "key_down" and e[4] == kb.keys.r then -- run
         local result, err = th.run(selectedfile)
         if not result then
           errorprompt(err)
         end
-      elseif keydown and e[4] == kb.keys.e then
-        shell.execute(editor .. " " .. selectedfile)
-      elseif keydown and e[4] == kb.keys.x then
+      elseif e[1] == "key_down" and e[4] == kb.keys.e then -- edit
+        shell.execute(editor .. " " .. selectedfile) 
+      elseif e[1] == "key_down" and e[4] == kb.keys.x then -- delete
+        local input = prompt("DELETE", "Delete file? (y/N)")
+        if input == "y" then
+          fs.remove(selectedfile)
+        else
+          errorprompt("ERROR DELETING (Action denied)")
+        end
+      elseif e[1] == "key_down" and e[4] == kb.keys.m then -- move
+        local input = prompt("MOVE", "New path and name:")
+        fs.rename(selectedfile, input)
+      elseif e[1] == "key_down" and e[4] == kb.keys.c then -- copy
+        local input = prompt("COPY", "Copy destination:")
+        fs.copy(selectedfile, input)
       end
     end
   end
+end
 end
 
 local function closebutton()
@@ -113,7 +130,7 @@ end
 gpu.fill(x, y, w, h, " ")
 while true do -- should i do the loop?
   gpu.setForeground(0xFFFFFF)
-  drawWindow(x, y, w, h, "File Manager -- " .. currentdir)
+  th.dwindow(x, y, w, h, "File Manager -- " .. currentdir)
   closebutton()
   contextbar()
   local event = table.pack(e.pull())

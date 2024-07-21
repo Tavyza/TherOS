@@ -4,13 +4,18 @@ local gpu = require("component").gpu
 local event = require("event")
 local keyboard = require("keyboard")
 local c = require("computer")
+local conf = require("conlib")
+local th = require("theros")
+local fs = require("filesystem")
+local bkgclr, txtclr, usoclr, sloclr, _, _, appdir, _, _ = conf.general()
+local sysver = conf.version()
 
-local options = {
-    "example option one",
-    "example option two",
-    "example option three",
-    "example option four"
-}
+local options = {}
+
+for app in fs.list(appdir) do
+    table.insert(options, app)
+end
+
 
 local selected = 1
 
@@ -28,19 +33,18 @@ local function clamp(value, min, max)
         return value
     end
 end
-
 local function drawMenu()
-    gpu.setBackground(0x000028) -- do NOT USE FUCKING BRIGHT ASS COLORS AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    gpu.setBackground(bkgclr) -- do NOT USE FUCKING BRIGHT ASS COLORS AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     gpu.fill(x, y, w, h, " ") -- clear the screen
 
     for i, option in ipairs(options) do
         -- highlighting will be very basic for now
         if i == selected then
             -- option is highlighted
-            gpu.setForeground(0xFFFFFF) -- note for later: change to config value
+            gpu.setForeground(sloclr) -- note for later: change to config value
         else
             -- option is not highlighted
-            gpu.setForeground(0x282828) -- note for later: change to config value
+            gpu.setForeground(usoclr) -- note for later: change to config value
         end
 
         local centerX = math.floor((w - #option) / 2)
@@ -55,7 +59,8 @@ local function updateSelection(event)
     elseif event[1] == "key_down" and event[4] == keyboard.keys.down then
         selected = clamp(selected + 1, 1, #options)
     elseif event[1] == "key_down" and event[4] == keyboard.keys.enter then
-        gpu.set(1, 1, "gaylord robinson")
+        local result, err = th.run(options[selected])
+        print(err)
     end
 end
 

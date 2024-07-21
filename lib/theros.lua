@@ -55,4 +55,14 @@ function theros.dwindow(x, y, w, h, titletext)
   return {x = x, y = y, w = w, h = h}
 end
 
+function theros.clamp(value, min, max)
+  if value < min then
+    return max
+  elseif value > max then
+    return max
+  else
+    return value
+  end
+end
+
 return theros
