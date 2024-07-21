@@ -135,7 +135,6 @@ while true do
             elseif option == 4 then
               print("Enter new path/name: ") 
               io.write("LOCATION -> ")
-              print("Moving/renaming to: " .. io.read()) 
               fs.rename(selectedFile, io.read())
             elseif option == 5 then
               print("Delete " .. selectedFile) 
