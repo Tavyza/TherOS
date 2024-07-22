@@ -22,7 +22,7 @@ config.fmdclr = 0x0000FF
 config.fmfclr = 0x00FF00
 
 -- apps directory (ABSOLUTE PATH ONLY)
-config.appdir = "/home/apps/"
+config.appdir = "/sys/apps/"
 
 -- terminal location (ABSOLUTE PATH ONLY)
 config.trmdir = "/bin/therterm.lua"
