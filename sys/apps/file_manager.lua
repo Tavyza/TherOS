@@ -11,7 +11,7 @@ local bkgclr, txtclr, _, _, fmdclr, fmfclr, _, trmdir, editor = require("conlib"
 
 local w, h = gpu.getResolution()
 ::inthebeginning::
-t.setBackground(bkgclr)
+gpu.setBackground(bkgclr)
 
 local currentDir = "/" -- sets to root dir at first, might change later
 
@@ -20,6 +20,7 @@ local function listFiles(currentDir)
   for file in fs.list(currentDir) do
     table.insert(files, file)
   end
+  table.sort(files)
   return files
 end
 
@@ -29,9 +30,9 @@ local function displayFiles(files, currentDir) -- function to print out all file
   for i, file in ipairs(files) do -- this just goes through the table
     local fullPath = fs.concat(currentDir, file)
     if fs.isDirectory(fullPath) then -- i really don't like this being here because it just doesn't work half the time (counter note, it DOES work now)
-      color = fmdirtextcolor
+      color = fmdclr
     else
-      color = fmfiletextcolor
+      color = fmfclr
     end
     ct(3 + (i - 1), file, color) -- well this just... prints the files
   end
@@ -169,14 +170,11 @@ while true do -- loop to keep the program running
         end
       elseif optionChoice == 5 then -- delete
         gpu.fill(60, 20, 100, 30, " ")
-        ct(h / 2, "DELETE CONFIRM FOR " .. selectedFile)
-        ct((h / 2) + 1, "Are you sure you want to delete " .. selectedFile .. "? This action cannot be reversed!")
-        t.setCursor(70, 27)
-        io.write("yes/N")
-        if io.read() == "yes" then
+        th.popup("Delete file (y/N)", "input", "Are you sure you want to delete " .. selectedFile .. "? This action cannot be reversed!")
+        if io.read() == "y" then
           local ok, err = fs.remove(selectedFile)
           if not ok then
-            ct((h / 2) + 5, "Error deleting " .. selectedFile .. ": " .. err, 0xFF0000)
+            th.popup("ERROR", "err", "Error removing file: " .. err)
             io.read()
           end
         else

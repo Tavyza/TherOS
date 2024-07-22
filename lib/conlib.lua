@@ -19,7 +19,7 @@ config.sloclr = 0xFFFFFF
 config.fmdclr = 0x0000FF
 
 -- file manager file color
-config.fmfclr = 0x59760e
+config.fmfclr = 0x00FF00
 
 -- apps directory (ABSOLUTE PATH ONLY)
 config.appdir = "/home/apps/"

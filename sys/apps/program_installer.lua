@@ -37,7 +37,6 @@ local function floppy()
   drives = component.list("filesystem")
 end
 
-
 while true do
   menu()
   local _, _, _, y, _, _ = e.pull("touch")

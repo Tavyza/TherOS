@@ -6,7 +6,7 @@ local component = require("component")
 local gpu = component.gpu
 local w, h = gpu.getResolution()
 
-local installerversion = "TherOS 1.1"
+local installerversion = "1.1.2-B"
 local header = "TherOS Updater"
 
 -- TEXT CENTERING
@@ -18,8 +18,8 @@ local function centerText(y, text, color)
   gpu.setForeground(color)
   gpu.set(x, y, text)
 end
-
 local function online()
+  ::onlineinstall::
   t.clear()
   centerText(1, "Please select branch: ")
   local branches = {
@@ -40,9 +40,10 @@ local function online()
     branch = "bleeding-edge"
   elseif choice == 3 then
     print("Feature not supported yet. (how ironic)\nMaybe this will be out by the time 1.1 goes on to the main branch.")
-    return
+    os.sleep(2)
+    os.exit()
   elseif choice == 4 then
-    return "menu"
+    menu()
   end
 
   t.clear()
@@ -56,7 +57,8 @@ local function online()
     print("Config library not found. Proceeding...")
     oldver = "1"
   end
-  if version ~= oldVersion then
+  if version == nil then version = "1" end
+  if version ~= oldver then
     centerText(1, "Do you want to install " .. version .. "?")
     centerText(3, "Yes")
     centerText(5, "No")
@@ -64,13 +66,13 @@ local function online()
     local choice = math.floor((y - 3) / 2) + 1
     if choice == 1 then
       t.clear()
-      if fs.exists("/sys/apps/installer.lua") and installerversion ~= version then
-        shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua")
-        print("New installer pulled. Please close the installer and restart the installation process.")
-        io.write("ok -> ")
-        io.read()
-        os.exit()
-      end
+      --if fs.exists("/sys/apps/installer.lua") and installerversion ~= version then
+        --shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua")
+        --print("New installer pulled. Please close the installer and restart the installation process.")
+        --io.write("ok -> ")
+        --io.read()
+        --os.exit()
+      --end
       centerText(math.floor(h / 2), "PREPPING INSTALLATION...")
       print("Pre-installation questions. Type \"skip\" to skip the questions.")
       local chlg, therterm, manual, programInstaller
@@ -112,15 +114,17 @@ local function online()
       t.clear()
       centerText(math.floor(h / 2), "INSTALLING (2/2)...")
       local programs = {
-        "/lib/centerText.lua",
-        "/lib/filesystem_ext.lua",
+        "/lib/centertext.lua",
+        "/lib/fsutils.lua",
+        "/lib/conlib.lua",
+        "/lib/theros.lua",
         "/sys/apps/file_manager.lua",
         "/sys/apps/installer.lua",
         "/sys/apps/system_settings.lua",
         "/sys/env/main.lua",
-        "/sys/thercon",
-        "/sys/version",
-        "/boot/94_therboot.lua"
+        "/boot/94_therboot.lua",
+        "/bin/clr.lua",
+        "/bin/cd.lua"
       }
       if chlg ~= "n" then
         table.insert(programs, "/sys/changelog")
@@ -149,18 +153,18 @@ local function online()
         require("computer").shutdown(true)
       end
     elseif choice == 2 then
-      return "menu"
+      os.exit()
     end
-  else
+  elseif version == oldver then
     centerText(1, "You are on the latest stable version of TherOS. Continue anyways?")
     centerText(3, "Yes")
     centerText(5, "No")
     local _, _, _, y, _, _ = e.pull("touch")
     local choice = math.floor((y - 3) / 2) + 1
     if choice == 1 then
-      return "onlineinstall"
+      goto onlineinstall
     elseif choice == 2 then
-      return "menu"
+      os.exit()
     end
   end
 end
@@ -237,14 +241,14 @@ local function floppy()
     t.clear()
     centerText(math.floor(h / 2), "INSTALLING (2/2)...")
     local programs = {
-      "/lib/centerText.lua",
-      "/lib/filesystem_ext.lua",
+      "/lib/centertext.lua",
+      "/lib/fsutils.lua",
+      "/lib/conlib.lua",
+      "/lib/theros.lua",
       "/sys/apps/file_manager.lua",
       "/sys/apps/installer.lua",
       "/sys/apps/system_settings.lua",
       "/sys/env/main.lua",
-      "/sys/thercon",
-      "/sys/version",
       "/boot/94_therboot.lua"
     }
     if chlg ~= "n" then
