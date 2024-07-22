@@ -50,7 +50,7 @@ local function online()
   io.write("Getting version...")
   fs.makeDirectory("/home/lib/conlib/")
   shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/lib/conlib.lua /home/lib/conlib/init.lua")
-  local sysver = require("/home/lib/conlib").version()
+  local sysver = require("/lib/conlib").version()
   io.write("Finding old version...")
   local oldver = require("conlib").version()
   if not oldver then

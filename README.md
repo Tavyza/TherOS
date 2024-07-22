@@ -13,6 +13,8 @@ TherOS requires:
 - 500 KB of memory
 - 30 KB of free space
 
+-- note: because of some fuckery with theros.run(), we are making a display server. don't ask.
+
 1 - Install OpenOS onto your computer
 
 2 - Reboot

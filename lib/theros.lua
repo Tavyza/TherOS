@@ -47,12 +47,12 @@ function theros.dwindow(x, y, w, h, titletext)
   gpu.set(x+w-1,y+h-1,"╝") -- bottom right corner
 
   gpu.set(math.floor(w/2)-math.floor(#titletext/2), 1, "[" .. titletext .. "]") -- setting the top text at the middle of the top
-  --gpu.setForeground(0xFF0000) --red
-  --gpu.set(w-4,1,"[X]") -- close button (commented for now because it doesn't work)
-  --local _, x, y, button, _ = e.pull("touch") -- grabbing touch signal
-  --if x == w-4 and y == 1 then --
-  --  os.exit()
-  --end
+  gpu.setForeground(0xFF0000) --red
+  gpu.set(w-4,1,"[X]") -- close button
+  local _, x, y, _, _ = e.pull("touch") -- grabbing touch signal
+  if x == w-4 and y == 1 then -- do the exit thingy
+    os.exit()
+  end
   return {x = x, y = y, w = w, h = h}
 end
 
