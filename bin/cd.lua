@@ -1,5 +1,4 @@
 local shell = require("shell")
-local t = require("term")
 
 local args, ops = shell.parse(...)
-t.setWorkingDirectory(args[1])
+shell.setWorkingDirectory(args[1])

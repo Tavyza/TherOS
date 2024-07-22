@@ -6,6 +6,7 @@ local e = require("event")
 local t = require("term")
 local ct = require("centertext")
 local conf = require("conlib")
+local th = require("theros")
 
 local bkgclr, txtclr, _, _, _, _, appdir, _, _ = conf.general()
 local sysver = conf.version()
