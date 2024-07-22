@@ -34,13 +34,13 @@ function config.general()
   return config.bkgclr, config.txtclr, config.usoclr, config.sloclr, config.fmdclr, config.fmfclr, config.appdir, config.trmdir, config.editor
 end
 -- versions for various system utilities, basically in what version they were updated last
-config.sysver = "2.0.1-B"
-config.updaterver = "2.0.1-B"
-config.fmver = "2.0.2-B"
-config.ctlibver = "2.0.2-B"
-config.configver = "2.0.2-B"
-config.theroslibver = "2.0.1-B"
-config.termver = "2.0.1-B"
+config.sysver = "1.1.2-B"
+config.updaterver = "1.1.2-B"
+config.fmver = "1.1.2-B"
+config.ctlibver = "1.1.2-B"
+config.configver = "1.1.2-B"
+config.theroslibver = "1.1.2-B"
+config.termver = "1.1.2-B"
 
 function config.version()
   return config.sysver, config.updaterver, config.fmver, config.ctlibver, config.configver, config.theroslibver, config.termver
