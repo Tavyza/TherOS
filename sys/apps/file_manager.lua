@@ -4,19 +4,14 @@ local gpu = require("component").gpu
 local e = require("event")
 local kb = require("keyboard")
 local shell = require("shell")
-local backgroundcolor, _, envtextcolor, fmfiletextcolor, fmdirtextcolor, _, _ = require("configlib")()
+local ct = require("centertext")
+local th = require("theros")
+local fsu = require("fsutils")
+local bkgclr, txtclr, _, _, fmdclr, fmfclr, _, trmdir, editor = require("conlib").general()
 
 local w, h = gpu.getResolution()
-
-local function ct(y, text, color)
-  if color == "" then
-    color = envtextcolor
-  end
-  t.setForeground(color)
-  gpu.set((w/2)-(#text/2), y, text)
-end
 ::inthebeginning::
-t.setBackground(backgroundcolor)
+t.setBackground(bkgclr)
 
 local currentDir = "/" -- sets to root dir at first, might change later
 
@@ -30,7 +25,7 @@ end
 
 local function displayFiles(files, currentDir) -- function to print out all files in the working directory
   t.clear()
-  ct(1, "File Manager 1.1 -- " .. currentDir) -- top text, might change
+  th.dwindow(1, 1, w, h, "File manager 1.1 -- " .. currentDir)
   for i, file in ipairs(files) do -- this just goes through the table
     local fullPath = fs.concat(currentDir, file)
     if fs.isDirectory(fullPath) then -- i really don't like this being here because it just doesn't work half the time (counter note, it DOES work now)

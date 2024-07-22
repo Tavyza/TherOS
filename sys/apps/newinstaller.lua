@@ -172,17 +172,20 @@ end
 local function floppy()
   for address in component.list("filesystem") do
     local drive = component.proxy(address)
-    if drive.exists("therosver") then
+    if drive.exists("conlib") then
       fs.makeDirectory("/install/")
       fs.mount(address, "/install/")
       print("Mounted " .. address .. " to /install/.")
-      local file = io.open("/install/sys/therosver")
-      local version = file:read("*a")
-      file:close()
-      print("Valid filesystem found! Version: " .. version)
-      install = true
+      local oldconfig = require("/install/lib/conlib")
+      if not oldconfig then
+        print("No config found on install media.")
+      else
+        version = oldconfig.version()
+        print("Valid filesystem found! Version: " .. version)
+        install = true
+      end
     else
-      print("No install media found!")
+      print("No install media found! Requires a valid TherOS conlib.lua file.")
       install = false
     end
   end

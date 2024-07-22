@@ -1,8 +1,8 @@
 -- TherOS general lib
-require("conlib")
 local fs = require("filesystem")
 local gpu = require("component").gpu
 local w, h = gpu.getResolution()
+local ct = require("centertext")
 
 local theros = {}
 
@@ -62,6 +62,25 @@ function theros.clamp(value, min, max)
     return max
   else
     return value
+  end
+end
+
+function theros.popup(header, type, text)
+  if type == "err" then
+    ct((h/2)-1, "-----" .. header .. "-----")
+    ct(h/2, text)
+    ct((h/2)+1, string.rep("-", #"-----" .. header .. "-----"))
+  elseif type == "input" then
+    ct((h/2)-2, "-----" .. header .. "-----")
+    ct((h/2)-1, text)
+    t.setCursor((w/2)-(#"-----" .. header .. "-----" - #"-----" .. header .. "-----"), h/2)
+    input = io.read()
+    ct((h/2)+1, string.rep("-", #"-----" .. header .. "-----"))
+    return input
+  else
+    ct((h/2)-1, "-----POPUP NOT SET UP PROPERLY!-----")
+    ct(h/2, "Missing 'type' for popup.")
+    ct((h/2)+1, string.rep("-", #"-----POPUP NOT SET UP PROPERLY!-----"))
   end
 end
 

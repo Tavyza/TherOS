@@ -4,7 +4,7 @@ local c = require("computer")
 local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
-local centerText = require("centerText")
+local centerText = require("centertext")
 
 local appdir = "/sys/apps"
 

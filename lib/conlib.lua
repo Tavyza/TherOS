@@ -9,10 +9,10 @@ config.bkgclr = 0x000028
 
 config.txtclr = 0xFFFFFF
 
--- unselected option color (for apps that support it and main env)
+-- unselected option color (for apps that support it)
 config.usoclr = 0x282828
 
--- selected option color (for apps that support it and main env)
+-- selected option color (for apps that support it)
 config.sloclr = 0xFFFFFF
 
 -- file manager dir color

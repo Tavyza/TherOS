@@ -2,6 +2,8 @@ local term = require("term")
 local event = require("event")
 local gpu = require("component").gpu
 local fs = require("filesystem")
+local conf = require("conlib")
+local bkgclr, txtclr, _, _, _, _, appdir, _, _ = conf.general()
 
 local options = {
   "test option one",
@@ -9,10 +11,7 @@ local options = {
   "test option three",
   "platano"
 }
-
-local config = io.open("/sys/thercon", "r")
-local bkclr = config:read("*8")
-
+gpu.setBackground(bkgclr)
 
 local selected = 1
 
@@ -25,7 +24,7 @@ local function drawMenu()
       gpu.setBackground(0x0000FF)
     else
       gpu.setForeground(0x000000)
-  		gpu.setBackground(bkgclr)
+  		
     end
       
     term.setCursor(1, i)
