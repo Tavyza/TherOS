@@ -68,16 +68,19 @@ end
 
 function theros.popup(header, type, text)
   header = "-----" .. header .. "-----"
+  gpu.fill((w/2)-(#header/2), (h/2)-2, (w/2)+(#header/2),(h/2)+1, " ")
   if type == "err" then
-    ct((h/2)-1, header)
+    ct((h/2)-2, header)
     ct(h/2, text)
+    ct(h/2, "Press ENTER to close")
+    io.read()
     ct((h/2)+1, string.rep("-", #header))
   elseif type == "input" then
     ct((h/2)-2, header)
     ct((h/2)-1, text)
     t.setCursor((w/2)-(#header - #header), h/2)
-    input = io.read()
     ct((h/2)+1, string.rep("-", #header))
+    input = io.read()
     return input
   else
     ct((h/2)-1, "-----POPUP NOT SET UP PROPERLY!-----")

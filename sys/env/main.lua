@@ -4,16 +4,18 @@ local c = require("computer")
 local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
-local centerText = require("centertext")
+local ct = require("centertext")
+local conf = require("conlib")
 
-local appdir = "/sys/apps"
+local bkgclr, txtclr, _, _, _, _, appdir, _, _ = conf.general()
+local sysver = conf.version()
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
-
+gpu.setBackground(bkgclr)
 local function updateOptions()
     local luaFiles = {}
-    for file in fs.list("/sys/apps") do
+    for file in fs.list(appdir) do
         if (file:sub(-4) == ".lua" or file:sub(-4) == ".txt") and file ~= "main.lua" then
             table.insert(luaFiles, file:sub(1, -5))
         end
@@ -24,24 +26,24 @@ end
 local function displaySystemInfo()
     local memCap = math.floor(c.totalMemory() / 1000)
     local memUsed = math.floor(memCap - (c.freeMemory() / 1000))
-    centerText(h - 3, "Uptime: " .. c.uptime() .. " sec")
-    centerText(h - 2, "Total RAM: " .. memCap .. " KB", 0xFFFFFF)
-    centerText(h - 1, "Used RAM: " .. memUsed .. " KB", 0xFFFFFF)
+    ct(h - 3, "Uptime: " .. c.uptime() .. " sec")
+    ct(h - 2, "Total RAM: " .. memCap .. " KB")
+    ct(h - 1, "Used RAM: " .. memUsed .. " KB")
 end
 
 local function displayMenu(options, topText)
     t.clear()
     gpu.fill(1, 1, w, h, " ")
-    centerText(1, topText, 0xFFFFFF)
+    ct(1, topText)
     displaySystemInfo()
     for i, option in ipairs(options) do
-        centerText(3 + (i - 1) * 2, option, 0xFFFFFF)
+        ct(3 + (i - 1) * 2, option)
     end
 end
 local options = updateOptions()
 table.insert(options, "reboot")
 table.insert(options, "shutdown")
-local topText = "TherOS 1.1"
+local topText = "TherOS " .. sysver
 
 displayMenu(options, topText)
 
@@ -74,7 +76,10 @@ while true do
             elseif selectedOption == "shutdown" then
                 c.shutdown()
             else
-                os.execute(appdir .. "/" .. selectedOption)
+                local ok, err = th.run(appdir .. "/" .. selectedOption)
+                if not ok then
+                    th.popup("ERROR", "err", err)
+                end
                 displayMenu(options, topText)
             end
         end

@@ -50,14 +50,6 @@ local function close()
   ct(h - 1, "Exit")
 end
 
-local function executeWithErrorHandling(command)
-  local result, error = pcall(shell.execute, command)
-  if error then
-    gpu.fill(60, 20, 100, 30, " ")
-    ct(h / 2 + 5, "Error: " .. error, 0xFF0000)
-    io.read()
-  end
-end
 
 while true do -- loop to keep the program running
   local files = listFiles(currentDir)
@@ -88,38 +80,17 @@ while true do -- loop to keep the program running
         if optionChoice == 1 then
           currentDir = selectedFile
         elseif optionChoice == 2 then
-          gpu.fill(60, 20, 100, 30, " ")
-          ct(h / 2, "Copying " .. selectedFile)
-          ct((h / 2) + 1, "Type copy dest (note this does not work across separate drives.)")
-          t.setCursor(70, 27)
-          io.write("fullcopypath -> ")
-          local ok, err = fs.copy(selectedFile, io.read())
-          if not ok then
-            ct((h / 2) + 5, "Error copying " .. selectedFile .. ": " .. err, 0xFF0000)
-            io.read()
-          end
+          local input = th.popup("Copy", "input", "Enter copy destination")
+        fsu.copydir(selectedFile, input)
         elseif optionChoice == 3 then
-          gpu.fill(60, 20, 100, 30, " ")
-          ct(h / 2, "Moving " .. selectedFile)
-          ct((h / 2) + 1, "Type new path (note this does not work across separate drives.)")
-          t.setCursor(70, 27)
-          io.write("fullmovepath -> ")
-          local ok, err = fs.rename(selectedFile, io.read())
-          if not ok then
-            ct((h / 2) + 5, "Error renaming " .. selectedFile .. ": " .. err, 0xFF0000)
-            io.read()
-          end
+          local input = th.popup("MOVE", "input", "Type new name/location: ")
+          fsu.movedir(selectedFile, input)
         elseif optionChoice == 4 then
-          gpu.fill(60, 20, 100, 30, " ")
-          ct(h / 2, "DELETE CONFIRM FOR " .. selectedFile)
-          ct((h / 2) + 1, "Are you sure you want to delete " .. selectedFile .. " and everything in it? This action cannot be reversed!")
-          t.setCursor(70, 27)
-          io.write("yes/N")
-          if io.read() == "yes" then
+          th.popup("Delete directory (y/N)", "input", "Are you sure you want to delete " .. selectedFile .. "? This action cannot be reversed!")
+          if io.read() == "y" then
             local ok, err = fs.remove(selectedFile)
             if not ok then
-              ct((h / 2) + 5, "Error deleting " .. selectedFile .. ": " .. err, 0xFF0000)
-              io.read()
+              th.popup("ERROR", "err", "Error removing directory: " .. err)
             end
           else
             ct((h / 2) + 5, "Error deleting " .. selectedFile .. ": Deletion cancelled", 0xFF0000)
@@ -140,42 +111,35 @@ while true do -- loop to keep the program running
       local optionChoice = math.floor((yOption - startLine) / 2) + 1
 
       if optionChoice == 1 then -- run
-        executeWithErrorHandling(selectedFile)
+        local good, err = th.run(selectedFile)
+        if not good then
+          th.popup("ERROR", "err", err)
+        end
       elseif optionChoice == 2 then -- edit
-        local ok, err = shell.execute("edit " .. selectedFile)
+        local ok, err = shell.execute(editor .. selectedFile)
         if not ok then
-          ct((h/2)+5,"Error editing " .. selectedFile .. ": " .. err, 0xFF0000)
+          th.popup("ERROR", "err", "Error editing file: " .. err)
           io.read()
         end
       elseif optionChoice == 3 then -- copy
-        gpu.fill(60, 20, 100, 30, " ")
-        ct(h / 2, "Type copy destination")
-        t.setCursor(70, 27)
-        io.write("fullcopydestination -> ")
-        local ok, err = fs.copy(selectedFile, io.read())
+        local input = th.popup("Copy", "input", "Enter copy destination")
+        local ok, err = fs.copy(selectedFile, input)
         local err = "Error message could not load! You probably tried to copy to a directory that doesn't exist."
         if not ok then
-          ct((h / 2) + 5, "Error copying " .. selectedFile .. ": " .. err, 0xFF0000)
-          io.read()
+          th.popup("ERROR", "err", "Error renaming file: " .. err)
         end
       elseif optionChoice == 4 then -- move
-        gpu.fill(60, 20, 100, 30, " ")
-        ct(h / 2, "Type new name/location")
-        t.setCursor(70, 27)
-        io.write("renamedfilename -> ")
-        local ok, err = fs.rename(selectedFile, io.read())
+        local input = th.popup("MOVE", "input", "Type new name/location: ")
+        local ok, err = fs.rename(selectedFile, input)
         if not ok then
-          ct((h / 2) + 5, "Error renaming " .. selectedFile .. ": " .. err, 0xFF0000)
-          io.read()
+          th.popup("ERROR", "err", "Error renaming file: " .. err)
         end
       elseif optionChoice == 5 then -- delete
-        gpu.fill(60, 20, 100, 30, " ")
         th.popup("Delete file (y/N)", "input", "Are you sure you want to delete " .. selectedFile .. "? This action cannot be reversed!")
         if io.read() == "y" then
           local ok, err = fs.remove(selectedFile)
           if not ok then
             th.popup("ERROR", "err", "Error removing file: " .. err)
-            io.read()
           end
         else
           ct((h / 2) + 5, "Error deleting " .. selectedFile .. ": Deletion cancelled", 0xFF0000)
@@ -194,24 +158,17 @@ while true do -- loop to keep the program running
     local optionChoice = math.floor((yOption - startLine) / 2) + 1
 
     if optionChoice == 1 then -- new file
-      gpu.fill(60, 20, 100, 30, " ")
-      ct(h / 2, "Type new file name")
-      t.setCursor(70, 27)
-      io.write("newfilename -> ")
-      local newFile = io.read()
+      local newfile = th.popup("New file", "input", "Name of new file: ")
       local file, err = fs.open(fs.concat(currentDir, newFile), "w")
       if not file then
-        ct((h / 2) + 5, "Error creating new file: " .. err, 0xFF0000)
+        th.popup("ERROR", "err", "Error making file: " .. err)
         io.read()
       else
         file:close()
       end
     elseif optionChoice == 2 then -- new dir
-      gpu.fill(60, 20, 100, 30, " ")
-      ct(h / 2, "Type new directory name")
-      t.setCursor(70, 27)
-      io.write("newdirname -> ")
-      local ok, err = fs.makeDirectory(fs.concat(currentDir, io.read()))
+      local newdir = th.popup("New directory", "input", "New directory name: ")
+      local ok, err = fs.makeDirectory(currentDir .. newdir)
       if not ok then
         ct((h / 2) + 5, "Error creating new directory: " .. err, 0xFF0000)
         io.read()
