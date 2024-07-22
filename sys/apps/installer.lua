@@ -47,15 +47,15 @@ local function online()
 
   t.clear()
   io.write("Getting version...")
-  shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/therosver /tmp/therosver")
-  local file = io.open("/tmp/therosver", "r")
-  local version = file:read("*a")
-  file:close()
+  fs.makeDirectory("/home/lib/conlib/")
+  shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/lib/conlib.lua /home/lib/conlib/init.lua")
+  local sysver = require("/home/lib/conlib").version()
   io.write("Finding old version...")
-  file = io.open("/sys/therosver", "r")
-  local oldVersion = file:read("*a")
-  file:close()
-
+  local oldver = require("conlib").version()
+  if not oldver then
+    print("Config library not found. Proceeding...")
+    oldver = "1"
+  end
   if version ~= oldVersion then
     centerText(1, "Do you want to install " .. version .. "?")
     centerText(3, "Yes")
@@ -67,10 +67,9 @@ local function online()
       if fs.exists("/sys/apps/installer.lua") and installerversion ~= version then
         shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua")
         print("New installer pulled. Please close the installer and restart the installation process.")
-        io.write("ok / override -> ")
-        if io.read() ~= "override" then
-          os.exit()
-        end
+        io.write("ok -> ")
+        io.read()
+        os.exit()
       end
       centerText(math.floor(h / 2), "PREPPING INSTALLATION...")
       print("Pre-installation questions. Type \"skip\" to skip the questions.")
@@ -113,7 +112,7 @@ local function online()
       t.clear()
       centerText(math.floor(h / 2), "INSTALLING (2/2)...")
       local programs = {
-        "/lib/configlib.lua",
+        "/lib/centerText.lua",
         "/lib/filesystem_ext.lua",
         "/sys/apps/file_manager.lua",
         "/sys/apps/installer.lua",
@@ -173,17 +172,20 @@ end
 local function floppy()
   for address in component.list("filesystem") do
     local drive = component.proxy(address)
-    if drive.exists("therosver") then
+    if drive.exists("conlib") then
       fs.makeDirectory("/install/")
       fs.mount(address, "/install/")
       print("Mounted " .. address .. " to /install/.")
-      local file = io.open("/install/sys/therosver")
-      local version = file:read("*a")
-      file:close()
-      print("Valid filesystem found! Version: " .. version)
-      install = true
+      local oldconfig = require("/install/lib/conlib")
+      if not oldconfig then
+        print("No config found on install media.")
+      else
+        version = oldconfig.version()
+        print("Valid filesystem found! Version: " .. version)
+        install = true
+      end
     else
-      print("No install media found!")
+      print("No install media found! Requires a valid TherOS conlib.lua file.")
       install = false
     end
   end
