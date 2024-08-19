@@ -54,11 +54,12 @@ local function online()
   shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/lib/conlib.lua /tmp/conlib.lua")
   local newconff = io.open("/tmp/conlib.lua", "r")
   local newconf = newconff:read("*a")
-  local version = newconf:match('config%.sysver%s*=%s*"(.-)"')
+  local version = newconf:find('config%.sysver%s*=%s*"(.-)"')
   newconff:close()
   io.write("Finding old version...")
-  local oldver = require("conlib").version() or ""
-  if oldver == "" or oldver == nil then
+  if fs.exists("/lib/conlib.lua") then
+    local oldver = require("conlib").version() 
+  else
     print("Config library not found. Proceeding...")
     oldver = "undefined"
   end
