@@ -9,6 +9,7 @@ local bkgclr, txtclr = conf.general()
 gpu = require("component").gpu
 local w, h = gpu.getResolution()
 local fsu = require("fsutils")
+local fs = require("filesystem")
 
 t.clear()
 gpu.setBackground(bkgclr)
