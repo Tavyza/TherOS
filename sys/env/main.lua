@@ -1,3 +1,5 @@
+print("loading...")
+
 local component = require("component")
 local gpu = component.gpu
 local c = require("computer")
@@ -7,6 +9,7 @@ local t = require("term")
 local ct = require("centertext")
 local conf = require("conlib")
 local th = require("theros")
+local shell = require("shell")
 
 local bkgclr, txtclr, _, _, _, _, appdir, _, _ = conf.general()
 local sysver = conf.version()
@@ -77,9 +80,10 @@ while true do
             elseif selectedOption == "shutdown" then
                 c.shutdown()
             else
-                local ok, err = th.run(appdir .. "/" .. selectedOption)
-                if not ok then
-                    th.popup("ERROR", "err", err)
+                local good, err = shell.execute(fs.concat(appdir, selectedOption))
+                if not good then
+                    th.popup("Error!", "err", err)
+                    os.sleep(2)
                 end
                 displayMenu(options, topText)
             end

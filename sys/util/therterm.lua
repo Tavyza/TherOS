@@ -1,9 +1,9 @@
+print("loading...")
+
 local term = require("term")
 local shell = require("shell")
 local fs = require("filesystem")
 local sh = require("sh")
-
-print("loading...")
 
 local wd = shell.getWorkingDirectory()
 

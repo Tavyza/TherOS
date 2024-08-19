@@ -1,3 +1,5 @@
+print("loading...")
+
 local fs = require("filesystem")
 local t = require("term")
 local e = require("event")
@@ -49,15 +51,18 @@ local function online()
   t.clear()
   io.write("Getting version...")
   fs.makeDirectory("/home/lib/conlib/")
-  shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/lib/conlib.lua /home/lib/conlib/init.lua")
-  local sysver = require("/lib/conlib").version()
+  shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/lib/conlib.lua /tmp/conlib.lua")
+  local newconff = io.open("/tmp/conlib.lua", "r")
+  local newconf = newconff:read("*a")
+  local version = newconf:match('config%.sysver%s*=%s*"(.-)"')
+  newconff:close()
   io.write("Finding old version...")
-  local oldver = require("conlib").version()
-  if not oldver then
+  local oldver = require("conlib").version() or ""
+  if oldver == "" or oldver == nil then
     print("Config library not found. Proceeding...")
-    oldver = "1"
+    oldver = "undefined"
   end
-  if version == nil then version = "1" end
+  if version == "" then version = "1" end
   if version ~= oldver then
     centerText(1, "Do you want to install " .. version .. "?")
     centerText(3, "Yes")
@@ -67,7 +72,7 @@ local function online()
     if choice == 1 then
       t.clear()
       --if fs.exists("/sys/apps/installer.lua") and installerversion ~= version then
-        --shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua")
+        --shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua /sys/apps/installer.lua")
         --print("New installer pulled. Please close the installer and restart the installation process.")
         --io.write("ok -> ")
         --io.read()
@@ -93,6 +98,10 @@ local function online()
         io.write("-> ")
         programInstaller = io.read()
         print("Option saved")
+        print("y/N replace config?")
+        io.write("-> ")
+        replaceconf = io.read()
+        print("Option saved")
         print("Pre-installation questions complete, proceeding with installation...")
       else
         print("Skipping, proceeding with installation...")
@@ -116,15 +125,13 @@ local function online()
       local programs = {
         "/lib/centertext.lua",
         "/lib/fsutils.lua",
-        "/lib/conlib.lua",
         "/lib/theros.lua",
         "/sys/apps/file_manager.lua",
         "/sys/apps/installer.lua",
         "/sys/apps/system_settings.lua",
         "/sys/env/main.lua",
         "/boot/94_therboot.lua",
-        "/bin/clr.lua",
-        "/bin/cd.lua"
+        "/bin/clr.lua"
       }
       if chlg ~= "n" then
         table.insert(programs, "/sys/changelog")
@@ -138,7 +145,9 @@ local function online()
       if programInstaller ~= "n" then
         table.insert(programs, "/sys/apps/program_installer.lua")
       end
-
+      if replaceconf == "y" or replaceconf == "Y" then
+        table.insert(programs, "/lib/conlib.lua")
+      end
       for _, program in ipairs(programs) do
         print(program)
         shell.execute("wget -f -Q https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. program .. " " .. program)
@@ -156,7 +165,7 @@ local function online()
       os.exit()
     end
   elseif version == oldver then
-    centerText(1, "You are on the latest stable version of TherOS. Continue anyways?")
+    centerText(1, "You are on the latest version of TherOS. Continue anyways?")
     centerText(3, "Yes")
     centerText(5, "No")
     local _, _, _, y, _, _ = e.pull("touch")

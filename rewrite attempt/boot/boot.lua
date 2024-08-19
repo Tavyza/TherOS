@@ -59,7 +59,7 @@ local function status(y, msg)
     end
     last_sleep = uptime()
   end
-end
+
 
 status((h/2)-1, "Booting " .. _OSVERSION .. "...")
 

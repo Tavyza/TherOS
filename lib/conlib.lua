@@ -34,16 +34,16 @@ function config.general()
   return config.bkgclr, config.txtclr, config.usoclr, config.sloclr, config.fmdclr, config.fmfclr, config.appdir, config.trmdir, config.editor
 end
 -- versions for various system utilities, basically in what version they were updated last
-config.sysver = "1.1.2-B"
-config.updaterver = "1.1.2-B"
-config.fmver = "1.1.2-B"
-config.ctlibver = "1.1.2-B"
+config.sysver = "1.1.3-B"
+config.inver = "1.1.3-B" -- installer version
+config.fmver = "1.1.3-B" -- file manager version
+config.ctlibver = "1.1.2-B" -- center text library version
 config.configver = "1.1.2-B"
 config.theroslibver = "1.1.2-B"
-config.termver = "1.1.2-B"
+config.termver = "1.1.3-B"
 
 function config.version()
-  return config.sysver, config.updaterver, config.fmver, config.ctlibver, config.configver, config.theroslibver, config.termver
+  return config.sysver, config.inver, config.fmver, config.ctlibver, config.configver, config.theroslibver, config.termver
 end
 
 return config

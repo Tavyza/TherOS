@@ -27,8 +27,8 @@ elseif chs == "3" then
   goto uh
 elseif chs == "4" then
   print("- Where is everything? -")
-  print("All TherOS files, with the exeption of the centerText library (/lib/centerText.lua) and the bootloader (/boot/94_systempuller.lua), are located in /sys/.")
-  print("The system environment is stored in /sys/env/, all apps you see on the main screen are in /sys/apps/, and TherTerm is located in /sys/util/.")
+  print("All TherOS files, with the exeption of libraries (in /lib/) and the bootloader (/boot/94_therboot.lua), are located in /sys/.")
+  print("The system environment is stored in /sys/env/, all apps you see on the main screen are in /sys/apps/ (configurable), and TherTerm is located in /sys/util/.")
   print("- Where is everything? -")
   goto uh
 elseif chs == "5" then
