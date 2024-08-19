@@ -54,7 +54,7 @@ local function online()
   shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/lib/conlib.lua /tmp/conlib.lua")
   local newconff = io.open("/tmp/conlib.lua", "r")
   local newconf = newconff:read("*a")
-  local version = newconf:find('config%.sysver%s*=%s*"(.-)"')
+  local version = newconf:match('config%.sysver%s*=%s*"(.-)"')
   newconff:close()
   io.write("Finding old version...")
   if fs.exists("/lib/conlib.lua") then
