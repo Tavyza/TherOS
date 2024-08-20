@@ -23,6 +23,10 @@ Congratulations! you installed TherOS.
 
 ## LINKS
 [TOCR](https://github.com/Tavyza/TherOS_community_repo) (TherOS Community Repository)
+
 [Wiki](https://github.com/Tavyza/TherOS/wiki/)
 
+-------------------------------------------
+
 PLEASE REPORT ALL BUGS IN THE ISSUES SECTION OF GITHUB.
+
