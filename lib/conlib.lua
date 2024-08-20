@@ -40,7 +40,7 @@ config.fmver = "1.1.3-B" -- file manager version
 config.ctlibver = "1.1.2-B" -- center text library version
 config.configver = "1.1.2-B"
 config.theroslibver = "1.1.2-B"
-config.termver = "1.1.3-B"
+config.termver = "1.0.0"
 
 function config.version()
   return config.sysver, config.inver, config.fmver, config.ctlibver, config.configver, config.theroslibver, config.termver
