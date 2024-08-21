@@ -17,7 +17,7 @@ TherOS requires:
 
 2 - Reboot
 
-3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua && installer``` in the shell
+3 - Run ```wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/apps/installer.lua && installer``` in the shell
 
 4 - Install from github
 
