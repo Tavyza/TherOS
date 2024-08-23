@@ -1,7 +1,7 @@
 # TherOS
 Lightweight OS for OpenComputers
 
-!! BLEEDING-EDGE BRANCH, EXPECT BUGS !!
+!! BLEEDING-EDGE BRANCH, EXPECT BUGS. USE AT YOUR OWN RISK !!
 
 ## INSTALLATION
 
@@ -23,4 +23,12 @@ TherOS requires:
 
 Congratulations! you installed TherOS.
 
+## LINKS
+[TOCR](https://github.com/Tavyza/TherOS_community_repo) (TherOS Community Repository)
+
+[Wiki](https://github.com/Tavyza/TherOS/wiki/)
+
+-------------------------------------------
+
 PLEASE REPORT ALL BUGS IN THE ISSUES SECTION OF GITHUB.
+

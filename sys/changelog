@@ -1,22 +1,18 @@
 |==========================================|
-|      -- THEROS VERSION 1.1.3 --          |
+|      -- THEROS VERSION 1.1.4 --          |
 |==========================================|
 
 -- ADDED --
-- issue #7 Scrolling and integration - Added requested features (scrolling in file manager and installing programs from floppy)
 
 -- FIXED (maybe)--
-- issue #8 Installer is trying to find a version file that doesn't exist
+- File manager does not open until it detects scroll event
 
 -- REMOVED --
 
 !!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
 
-Planned for next update (1.1.4):
-- Fix file manager error handling
-- Fix flickering in file manager when scrolling
-- Make window color a config option
-- Make a settings app
+Planned for next update (1.1.5):
+- Finish settings app
 
 =========================================================================================================================
 
