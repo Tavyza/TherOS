@@ -1,1 +1,0 @@
-require("component").gpu.fill(1, 1, 1000, 1000)

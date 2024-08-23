@@ -50,12 +50,13 @@ local function online()
 
   t.clear()
   io.write("Getting version...")
-  fs.makeDirectory("/home/lib/conlib/")
-  shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/lib/conlib.lua /tmp/conlib.lua")
-  local newconff = io.open("/tmp/conlib.lua", "r")
-  local newconf = newconff:read("*a")
-  local version = newconf:match('config%.sysver%s*=%s*"(.-)"')
-  newconff:close()
+  shell.execute("wget -q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/sys/.config/version.tc /tmp/version.tc")
+  local verfile = io.open("/tmp/version.tc", "r")
+  local versionlist = verfile:read("*a")
+  verfile:close()
+  for line in versionlist:lines() do
+    _, version = line:match("System:%s*(.+)")
+  end
   io.write("Finding old version...")
   if fs.exists("/lib/conlib.lua") then
     local oldver = require("conlib").version() 
@@ -72,15 +73,14 @@ local function online()
     local choice = math.floor((y - 3) / 2) + 1
     if choice == 1 then
       t.clear()
-      --if fs.exists("/sys/apps/installer.lua") and installerversion ~= version then
-        --shell.execute("wget -Q -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua /sys/apps/installer.lua")
-        --print("New installer pulled. Please close the installer and restart the installation process.")
-        --io.write("ok -> ")
-        --io.read()
-        --os.exit()
-      --end
+      io.write("Replace installer? It is recommended to do this if you are updating so you don't miss a file.\n")
+      io.write("Y/n -> ")
+      if io.read ~= "n" then
+        shell.execute("https://raw.githubusercontent.com/Tavyza/TherOS/"..branch.."/sys/apps/installer.lua")
+        os.exit()
+      end
       centerText(math.floor(h / 2), "PREPPING INSTALLATION...")
-      print("Pre-installation questions. Type \"skip\" to skip the questions.")
+      print("Pre-installation questions. Type \"skip\" to skip the questions (defaults will be used), hit enter to continue.")
       local chlg, therterm, manual, programInstaller
       if io.read() ~= "skip" then
         print("Y/n install changelog?")
@@ -99,10 +99,16 @@ local function online()
         io.write("-> ")
         programInstaller = io.read()
         print("Option saved")
-        print("y/N replace config?")
+        print("y/N replace config? Replace if you're installing fresh.")
         io.write("-> ")
         replaceconf = io.read()
         print("Option saved")
+        if replaceconf == "y" then
+          print("y/N Tier 1 compatibility?")
+          io.write("-> ")
+          t1compat = io.read()
+          print("Option saved")
+        end
         print("Pre-installation questions complete, proceeding with installation...")
       else
         print("Skipping, proceeding with installation...")
@@ -132,7 +138,9 @@ local function online()
         "/sys/apps/system_settings.lua",
         "/sys/env/main.lua",
         "/boot/94_therboot.lua",
-        "/bin/clr.lua"
+        "/bin/clr.lua",
+        "/lib/conlib.lua",
+        "/sys/.config/version.tc"
       }
       if chlg ~= "n" then
         table.insert(programs, "/sys/changelog")
@@ -147,11 +155,15 @@ local function online()
         table.insert(programs, "/sys/apps/program_installer.lua")
       end
       if replaceconf == "y" or replaceconf == "Y" then
-        table.insert(programs, "/lib/conlib.lua")
+        if t1compat ~= "y" then
+          table.insert(programs, "/sys/.config/general.tc")
+        else
+          shell.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/sys/.config/gn-t1compat.tc /sys/.config/general.tc")
       end
       for _, program in ipairs(programs) do
-        print(program)
-        shell.execute("wget -f -Q https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. program .. " " .. program)
+        print("Installing " .. program .. "...")
+        shell.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. program .. " " .. program)
+        io.write("[DONE]")
       end
       t.clear()
       centerText(math.floor(h / 2), "Finished! Reboot?")
@@ -177,6 +189,7 @@ local function online()
       os.exit()
     end
   end
+end
 end
 
 local function onlineinstall()

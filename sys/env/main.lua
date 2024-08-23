@@ -28,9 +28,20 @@ local function updateOptions()
 end
 
 local function displaySystemInfo()
+    local uptimeMins = c.uptime() / 60 % 60
+    local uptimeHour = (c.uptime() / 60) / 60
+    local uptimesec = c.uptime() % 60
+    uptime = c.uptime
+    if c.uptime() > 60 then
+        uptime = uptimeMins
+        unit = "min"
+    elseif c.uptime() > 3600 then
+        uptime = uptimeHour
+        unit = "hr"
+    end
     local memCap = math.floor(c.totalMemory() / 1000)
     local memUsed = math.floor(memCap - (c.freeMemory() / 1000))
-    ct(h - 3, "Uptime: " .. c.uptime() .. " sec")
+    ct(h - 3, "Uptime: " .. string.format("%02.0f", uptimeHour) .. ":" .. string.format("%02.0f", uptimeMins) .. ":" .. string.format("%02.0f", uptimesec))
     ct(h - 2, "Total RAM: " .. memCap .. " KB")
     ct(h - 1, "Used RAM: " .. memUsed .. " KB")
 end

@@ -25,6 +25,7 @@ local function listFiles(currentDir)
 end
 startline = 3
 scrollpos = 0
+require("computer").pushSignal("scroll", 1, 1, 1)
 _, _, _, scroll = e.pull("scroll") -- pulls scroll event
 
 local function displayFiles(files, currentDir) -- function to print out all files in the working directory
@@ -57,7 +58,7 @@ end
 local function close()
   ct(h - 1, "Exit")
 end
-require("computer").pushSignal("scroll", 1)
+
 while true do -- loop to keep the program running
   local files = listFiles(currentDir)
   displayFiles(files, currentDir)
@@ -81,12 +82,13 @@ while true do -- loop to keep the program running
       if fs.isDirectory(selectedFile) then
         if kb.isKeyDown(0x2A) then -- shift key
           local options = {"Open", "Copy", "Move/Rename", "Delete"}
-          local startLine = h / 2 - (#options * 2)
+          local startLine = h / 2 - (#options / 2)
           for i, option in ipairs(options) do
             ct(startLine + (i - 1) * 2, option)
           end
 
           local _, _, _, yOption = e.pull("touch")
+          yOption = yOption + 1
           local optionChoice = math.floor((yOption - startLine) / 2) + 1
 
           if optionChoice == 1 then
@@ -111,12 +113,13 @@ while true do -- loop to keep the program running
         end
       else
         local options = {"Run", "Edit", "Copy", "Move/Rename", "Delete"}
-        local startLine = h / 2 - (#options * 2)
+        local startLine = h / 2 - (#options / 2)
         for i, option in ipairs(options) do
           ct(startLine + (i - 1) * 2, option)
         end
 
         local _, _, _, yOption = e.pull("touch")
+        yOption = yOption + 1
         local optionChoice = math.floor((yOption - startLine) / 2) + 1
 
         if optionChoice == 1 then -- run
