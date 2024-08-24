@@ -1,19 +1,17 @@
 |==========================================|
-|      -- THEROS VERSION 1.1.6 --          |
+|     -- THEROS VERSION 1.1.7-B --         |
 |==========================================|
 
 -- ADDED --
 
 -- FIXED --
-- #9 Probably only an issue on pretty not-so-powerful systems
-- #10 File manager/main env error handling now works
-- #11 (fixed in previous version) You can get tier 1 compatibility in the install process when replacing config. this will install a config with different defaults made for tier 1 in mind.
+- Installer would quit if you didn't replace the config
 
 -- REMOVED --
 
 !!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
 
-Planned for next update:
+Planned for next update: settings???
 
 =========================================================================================================================
 

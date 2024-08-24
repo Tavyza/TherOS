@@ -104,12 +104,10 @@ local function online()
         io.write("-> ")
         replaceconf = io.read()
         print("Option saved")
-        if replaceconf == "y" then
-          print("y/N Tier 1 compatibility?")
-          io.write("-> ")
-          t1compat = io.read()
-          print("Option saved")
-        end
+        print("y/N Tier 1 compatibility?")
+        io.write("-> ")
+        t1compat = io.read()
+        print("Option saved")
         print("Pre-installation questions complete, proceeding with installation...")
       else
         print("Skipping, proceeding with installation...")
@@ -127,6 +125,10 @@ local function online()
       if not fs.exists("/sys/util/") then
         print("Creating /sys/util/")
         fs.makeDirectory("/sys/util/")
+      end
+      if not fs.exists("/sys/.config/") then
+        print("Creating /sys/.config/")
+        fs.makeDirectory("/sys/.config/")
       end
       t.clear()
       centerText(math.floor(h / 2), "INSTALLING (2/2)...")
