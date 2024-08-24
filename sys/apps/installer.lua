@@ -54,8 +54,9 @@ local function online()
   local verfile = io.open("/tmp/version.tc", "r")
   local versionlist = verfile:read("*a")
   verfile:close()
-  for line in versionlist:lines() do
+  for line in versionlist:gmatch("[^\r\n]+") do
     _, version = line:match("System:%s*(.+)")
+    if version or version ~= nil then break end
   end
   io.write("Finding old version...")
   if fs.exists("/lib/conlib.lua") then
@@ -64,7 +65,7 @@ local function online()
     print("Config library not found. Proceeding...")
     oldver = "undefined"
   end
-  if version == "" then version = "1" end
+  if version == "" or version == nil then version = "error" end
   if version ~= oldver then
     centerText(1, "Do you want to install " .. version .. "?")
     centerText(3, "Yes")
