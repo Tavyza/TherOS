@@ -55,7 +55,7 @@ local function online()
   local versionlist = verfile:read("*a")
   verfile:close()
   for line in versionlist:gmatch("[^\r\n]+") do
-    _, version = line:match("System:%s*(.+)")
+    version = line:match("System:%s*(.+)")
     if version or version ~= nil then break end
   end
   io.write("Finding old version...")
