@@ -76,8 +76,8 @@ local function online()
       t.clear()
       io.write("Replace installer? It is recommended to do this if you are updating so you don't miss a file.\n")
       io.write("Y/n -> ")
-      if io.read ~= "n" then
-        shell.execute("https://raw.githubusercontent.com/Tavyza/TherOS/"..branch.."/sys/apps/installer.lua")
+      if io.read() ~= "n" then
+        shell.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/"..branch.."/sys/apps/installer.lua")
         os.exit()
       end
       centerText(math.floor(h / 2), "PREPPING INSTALLATION...")
@@ -191,10 +191,6 @@ local function online()
     end
   end
 end
-end
-
-local function onlineinstall()
-  -- Online installation logic here
 end
 
 local function floppy()
