@@ -1,18 +1,19 @@
 |==========================================|
-|      -- THEROS VERSION 1.1.4 --          |
+|      -- THEROS VERSION 1.1.6 --          |
 |==========================================|
 
 -- ADDED --
 
--- FIXED (maybe)--
-- File manager does not open until it detects scroll event
+-- FIXED --
+- #9 Probably only an issue on pretty not-so-powerful systems
+- #10 File manager/main env error handling now works
+- #11 (fixed in previous version) You can get tier 1 compatibility in the install process when replacing config. this will install a config with different defaults made for tier 1 in mind.
 
 -- REMOVED --
 
 !!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
 
-Planned for next update (1.1.5):
-- Finish settings app
+Planned for next update:
 
 =========================================================================================================================
 

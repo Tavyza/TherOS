@@ -73,10 +73,10 @@ function theros.popup(header, type, text)
   if type == "err" then
     if text ~= nil then
       ct((h/2)-2, header)
-      ct(h/2, text)
-      ct((h/2)+1, "Press ENTER to close")
+      ct((h/2)-1, text)
+      ct(h/2, "Press ENTER to close")
       _ = io.read()
-      ct((h/2)+2, string.rep("-", #header))
+      ct((h/2)+1, string.rep("-", #header))
     end
   elseif type == "input" then
     ct((h/2)-2, header)

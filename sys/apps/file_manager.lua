@@ -123,7 +123,7 @@ while true do -- loop to keep the program running
         local optionChoice = math.floor((yOption - startLine) / 2) + 1
 
         if optionChoice == 1 then -- run
-          local good, err = th.run(selectedFile)
+          local good, err = pcall(th.run(selectedFile))
           if not good and err then
             th.popup("ERROR", "err", err)
           end
