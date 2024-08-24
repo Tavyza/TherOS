@@ -31,24 +31,6 @@ config.editor = fullfile:match("Edt-dir:%s*(.+)")
 function config.general()
   return config.bkgclr, config.txtclr, config.usoclr, config.sloclr, config.fmdclr, config.fmfclr, config.appdir, config.trmdir, config.editor
 end
--- versions for various system utilities, basically in what version they were updated last
-<<<<<<< HEAD
-config.sysver = fullfile:match("System:%s*(.+)")
-config.inver = fullfile:match("Instll:%s*(.+)") -- installer version
-config.fmver = fullfile:match("Filemn:%s*(.+)") -- file manager version
-config.ctlibver = fullfile:match("Ctxlib:%s*(.+)") -- center text library version
-config.configver = fullfile:match("Config:%s*(.+)")
-config.theroslibver = fullfile:match("ThOlib:%s*(.+)")
-config.termver = fullfile:match("Termin:%s*(.+)")
-=======
-config.sysver = "1.1.3-B"
-config.inver = "1.1.3-B" -- installer version
-config.fmver = "1.1.3-B" -- file manager version
-config.ctlibver = "1.1.2-B" -- center text library version
-config.configver = "1.1.2-B"
-config.theroslibver = "1.1.2-B"
-config.termver = "1.0.0"
->>>>>>> 500e8a525261ee6e231da288c1fd80a745bdad63
 
 function config.version()
   return config.sysver, config.inver, config.fmver, config.ctlibver, config.configver, config.theroslibver, config.termver
