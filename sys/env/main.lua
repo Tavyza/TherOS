@@ -91,7 +91,7 @@ while true do
             elseif selectedOption == "shutdown" then
                 c.shutdown()
             else
-                local good, err = pcall(shell.execute(fs.concat(appdir, selectedOption)))
+                local good, err = shell.execute(fs.concat(appdir, selectedOption))
                 if not good then
                     th.popup("Error!", "err", err)
                     os.sleep(2)

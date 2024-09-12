@@ -162,6 +162,7 @@ local function online()
           table.insert(programs, "/sys/.config/general.tc")
         else
           shell.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/sys/.config/gn-t1compat.tc /sys/.config/general.tc")
+        end
       end
       for _, program in ipairs(programs) do
         print("Installing " .. program .. "...")
@@ -192,7 +193,6 @@ local function online()
       os.exit()
     end
   end
-end
 end
 
 local function floppy()

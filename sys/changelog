@@ -1,11 +1,12 @@
 |==========================================|
-|     -- THEROS VERSION 1.1.7-B --         |
+|     -- THEROS VERSION 1.1.8-B --         |
 |==========================================|
 
 -- ADDED --
 
 -- FIXED --
-- Installer would quit if you didn't replace the config
+- [#12](https://github.com/Tavyza/TherOS/issues/12) Installer would quit if you didn't replace the config
+- [#13](https://github.com/Tavyza/TherOS/issues/13) Attempt to make error handling more helpful
 
 -- REMOVED --
 
