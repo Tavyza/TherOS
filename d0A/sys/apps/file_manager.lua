@@ -103,7 +103,7 @@ while true do -- loop to keep the program running
             local confm = th.popup("Delete directory (y/N)", "input", "Are you sure you want to delete " .. selectedFile .. "? This action cannot be reversed!")
             if confm == "y" then
               local ok, err = fs.remove(selectedFile)
-              if not ok then
+              if not ok and err then
                 th.popup("ERROR", "err", "Error removing directory: " .. err)
               end
             end

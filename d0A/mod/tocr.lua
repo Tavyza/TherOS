@@ -12,7 +12,6 @@ help = [[Usage:
 -l, --list             pull and print list of all available packages
 -a, --list-installed   print list of all installed packages
 -h, --help             print help
--b, --build            build a package that isn't pre-built
 
 You need an internet card to install packages. This will not pull files locally.]]
 local deptab = {}
@@ -29,8 +28,12 @@ if ops.i or ops.install then
     file:close()
     for _, dep in ipairs(deptab) do
       if dep ~= nil then
-        print("-> installing " .. dep)
-        local filename = dep:match("^.+/(.+)$")
+        local url = dep
+        if not dep:match("^https?://") then
+          url = base_url .. dep
+        end
+        local filename = url:match("^.+/(.+)$")
+        print("-> installing " .. filename)
         shell.execute("wget -q " .. dep .. " /usr/lib/" .. filename)
       else
         print("No dependencies.")
@@ -40,16 +43,25 @@ if ops.i or ops.install then
     pkin = {}
     shell.execute("wget -q https://raw.githubusercontent.com/Tavyza/TherOS_community_repo/main/" .. package .. "/package.tc /tmp/package.tc")
     pk = io.open("/tmp/package.tc", "r")
-    for pak in pk:gmatch("[^\r\n]+") do
+    
+    for pak in string.gmatch(pk, "[^\r\n]+") do
       if pak ~= "" then
         table.insert(pkin, pak)
       end
     end
-    for _, pak in ipairs(pkin)
-      shell.execute("wget -q " .. pak)
+    for _, pak in ipairs(pkin) do
+      shell.execute("wget -q " .. pak .. " /usr/bin/" .. pak)
     end
     fs.remove("/tmp/*")
   end
+end
+
+if ops.l or ops.list then
+  shell.execute("wget -q -f https://raw.githubusercontent.com/Tavyza/TherOS_community_repo/main/repo_list.tc /tmp/repo_list.tc")
+  local file = io.open("/tmp/repo_list.tc", "r")
+  local list = file:read("*a")
+  file:close()
+  print(list)
 end
 
 if ops.h or ops.help or not next(ops) then
