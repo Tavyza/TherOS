@@ -159,13 +159,14 @@ while true do -- loop to keep the program running
         end
       end
     else
-      local options = {"New File", "New Directory"}
-      local startLine = h / 2 - (#options * 2)
+      local options = {"New File", "New Directory", "Terminal"}
+      local startLine = h / 2 - (#options / 2)
       for i, option in ipairs(options) do
         ct(startLine + (i - 1) * 2, option)
       end
 
       local _, _, _, yOption = e.pull("touch")
+      yOption = yOption + 1
       local optionChoice = math.floor((yOption - startLine) / 2) + 1
 
       if optionChoice == 1 then -- new file
@@ -181,6 +182,9 @@ while true do -- loop to keep the program running
         if not ok then
           th.popup("ERROR", "err", "Error making dir: " .. err)
         end
+      elseif optionChoice == 3 then -- open terminal in location
+        shell.setWorkingDirectory(currentDir)
+        shell.execute(trmdir)
       end
     end
   end

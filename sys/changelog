@@ -1,18 +1,23 @@
 |==========================================|
-|     -- THEROS VERSION 1.1.8-B --         |
+|     -- THEROS VERSION 1.1.9-B --         |
 |==========================================|
 
 -- ADDED --
 
--- FIXED --
-- [#12](https://github.com/Tavyza/TherOS/issues/12) Installer would quit if you didn't replace the config
-- [#13](https://github.com/Tavyza/TherOS/issues/13) Attempt to make error handling more helpful
+-- FIXED/CHANGED --
+- Additional issues with error handling
+- Try to make fsutil.copydir more helpful
+- File manager options offset from actual button hitbox
+- Changed tier 1 compatibility defaults
+- Changed tier 1 compatibility to tier 1/2 compatibility
+- hours and minutes for uptime clock would round up
 
 -- REMOVED --
+- Old installer path (/sys/app/installer.lua) (All computers on versions earlier than 1.0.3 will have to re-install the installer through the program installer)
 
 !!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
 
-Planned for next update: settings???
+Planned for next update: No new apps will be created until a window manager is set up. I will have to port existing programs. Please check the project linked with TherOS for context.
 
 =========================================================================================================================
 

@@ -10,12 +10,12 @@ local theros = {}
 
 function theros.run(program)
   if not fs.exists(program) then
-    return "", "FILE NOT FOUND (Does the file exist?)"
+    return false, "FILE NOT FOUND (Does the file exist?)"
   end
   local prgm = ""
   local file, reason = io.open(program, "r")
   if not file then
-    return "", "ERROR: " .. reason
+    return false, "ERROR: " .. reason
   end
   repeat
     local chunk = file:read(math.huge)
@@ -27,12 +27,12 @@ function theros.run(program)
 
   local func, reason = load(prgm, "=" .. program)
   if not func then
-    return "", "LOAD ERROR: " .. reason
+    return false, "LOAD ERROR: " .. reason
   end
 
   local success, result = pcall(func)
   if not success then
-    return "", "EXECUTE ERROR: " .. result
+    return false, "EXECUTE ERROR: " .. result
   end
   return result
 end

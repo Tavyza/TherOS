@@ -11,10 +11,10 @@ Selected option color (for apps that support it)
 Sel-clr:0xFFFFFF
 
 File manager directory color
-Fmd-clr:0x0000FF
+Fmd-clr:0x00FFFF
 
 File manager file color
-Fmf-clr:0x00FF00
+Fmf-clr:0xFFFF00
 
 Absolute directory that contains the programs displayed in the main environment
 App-dir:/sys/apps/

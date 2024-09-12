@@ -41,7 +41,7 @@ local function displaySystemInfo()
     end
     local memCap = math.floor(c.totalMemory() / 1000)
     local memUsed = math.floor(memCap - (c.freeMemory() / 1000))
-    ct(h - 3, "Uptime: " .. string.format("%02.0f", uptimeHour) .. ":" .. string.format("%02.0f", uptimeMins) .. ":" .. string.format("%02.0f", uptimesec))
+    ct(h - 3, "Uptime: " .. string.format("%02.0f", math.floor(uptimeHour)) .. ":" .. string.format("%02.0f", math.floor(uptimeMins)) .. ":" .. string.format("%02.0f", math.floor(uptimesec)))
     ct(h - 2, "Total RAM: " .. memCap .. " KB")
     ct(h - 1, "Used RAM: " .. memUsed .. " KB")
 end
