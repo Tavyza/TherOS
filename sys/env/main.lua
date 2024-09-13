@@ -18,11 +18,10 @@ local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
 gpu.setBackground(bkgclr)
 local function updateOptions()
-    local luaFiles = {}
-    for file in fs.list(appdir) do
-        if (file:sub(-4) == ".lua" or file:sub(-4) == ".txt") and file ~= "main.lua" then
-            table.insert(luaFiles, file:sub(1, -5))
-        end
+    local apps = {}
+    for app in fs.list(appdir) do
+        table.insert(apps, file:sub(1, -5))
+        table.sort(apps)
     end
     return luaFiles
 end

@@ -1,19 +1,14 @@
 |==========================================|
-|     -- THEROS VERSION 1.1.9-B --         |
+|     -- THEROS VERSION 1.1.10-B --        |
 |==========================================|
 
 -- ADDED --
 
 -- FIXED/CHANGED --
-- Additional issues with error handling
-- Try to make fsutil.copydir more helpful
-- File manager options offset from actual button hitbox
-- Changed tier 1 compatibility defaults
-- Changed tier 1 compatibility to tier 1/2 compatibility
-- hours and minutes for uptime clock would round up
+- Main environment will now sort the app list
 
 -- REMOVED --
-- Old installer path (/sys/app/installer.lua) (All computers on versions earlier than 1.0.3 will have to re-install the installer through the program installer)
+- Old unused code in the main environment (like, really old, year old code)
 
 !!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
 
