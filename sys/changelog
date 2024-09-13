@@ -1,18 +1,17 @@
 |==========================================|
-|     -- THEROS VERSION 1.1.10-B --        |
+|     -- THEROS VERSION 1.1.11-B --        |
 |==========================================|
 
 -- ADDED --
 
 -- FIXED/CHANGED --
-- Main environment will now sort the app list
+- Fix variable name mismatch
 
 -- REMOVED --
-- Old unused code in the main environment (like, really old, year old code)
 
 !!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
 
-Planned for next update: No new apps will be created until a window manager is set up. I will have to port existing programs. Please check the project linked with TherOS for context.
+Planned: No new apps will be created until a window manager is set up. I will have to port existing programs. Please check the project linked with TherOS for context.
 
 =========================================================================================================================
 

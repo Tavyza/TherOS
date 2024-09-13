@@ -20,7 +20,7 @@ gpu.setBackground(bkgclr)
 local function updateOptions()
     local apps = {}
     for app in fs.list(appdir) do
-        table.insert(apps, file:sub(1, -5))
+        table.insert(apps, app:sub(1, -5))
         table.sort(apps)
     end
     return luaFiles
