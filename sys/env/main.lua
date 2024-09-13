@@ -23,7 +23,7 @@ local function updateOptions()
         table.insert(apps, app:sub(1, -5))
         table.sort(apps)
     end
-    return luaFiles
+    return apps
 end
 
 local function displaySystemInfo()
