@@ -8,7 +8,7 @@ local component = require("component")
 local gpu = component.gpu
 local w, h = gpu.getResolution()
 
-local installerversion = "1.1.2-B"
+local installerversion = "1.1.12-B"
 local header = "TherOS Updater"
 
 -- TEXT CENTERING
@@ -74,44 +74,34 @@ local function online()
     local choice = math.floor((y - 3) / 2) + 1
     if choice == 1 then
       t.clear()
-      io.write("Replace installer? It is recommended to do this if you are updating so you don't miss a file.\n")
-      io.write("Y/n -> ")
-      if io.read() ~= "n" then
-        shell.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/"..branch.."/sys/apps/installer.lua")
-        os.exit()
-      end
+      
       centerText(math.floor(h / 2), "PREPPING INSTALLATION...")
-      print("Pre-installation questions. Type \"skip\" to skip the questions (defaults will be used), hit enter to continue.")
       local chlg, therterm, manual, programInstaller
-      if io.read() ~= "skip" then
-        print("Y/n install changelog?")
-        io.write("-> ")
-        chlg = io.read()
-        print("Option saved")
-        print("Y/n install therterm?")
-        io.write("-> ")
-        therterm = io.read()
-        print("Option saved")
-        print("Y/n install manual?")
-        io.write("-> ")
-        manual = io.read()
-        print("Option saved")
-        print("Y/n online program installer?")
-        io.write("-> ")
-        programInstaller = io.read()
-        print("Option saved")
-        print("y/N replace config? Replace if you're installing fresh.")
-        io.write("-> ")
-        replaceconf = io.read()
-        print("Option saved")
-        print("y/N Tier 1/2 compatibility?")
-        io.write("-> ")
-        t1compat = io.read()
-        print("Option saved")
-        print("Pre-installation questions complete, proceeding with installation...")
-      else
-        print("Skipping, proceeding with installation...")
-      end
+      print("Y/n install changelog?")
+      io.write("-> ")
+      chlg = io.read()
+      print("Option saved")
+      print("Y/n install therterm?")
+      io.write("-> ")
+      therterm = io.read()
+      print("Option saved")
+      print("Y/n install manual?")
+      io.write("-> ")
+      manual = io.read()
+      print("Option saved")
+      print("Y/n online program installer?")
+      io.write("-> ")
+      programInstaller = io.read()
+      print("Option saved")
+      print("y/N replace config? Replace if you're installing fresh.")
+      io.write("-> ")
+      replaceconf = io.read()
+      print("Option saved")
+      print("y/N Tier 1/2 compatibility?")
+      io.write("-> ")
+      t1compat = io.read()
+      print("Option saved")
+      print("Pre-installation questions complete, proceeding with installation...")
       t.clear()
       centerText(math.floor(h / 2), "CREATING DIRECTORIES (1/2)...")
       if not fs.exists("/sys/apps/") then
@@ -312,6 +302,7 @@ local function menu()
   local options = {
     "Install/Update TherOS (Online)",
     "Install/Update TherOS (Floppy disk)",
+    "Update installer",
     "Exit",
   }
   t.clear()
@@ -326,6 +317,21 @@ local function menu()
   elseif choice == 2 then
     floppy()
   elseif choice == 3 then
+    print("Updating installer, please wait...")
+    print([[
+      Branch:
+      [M]ain
+      [B]leeding edge
+    ]])
+    branch = io.read()
+    if branch == "m" or branch == "M" then
+      branch = "main"
+    elseif branch == "b" or branch == "B" then
+      branch = "bleeding-edge"
+    end
+    shell.execute("wget -q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/sys/apps/installer.lua /sys/apps/installer.lua")
+    os.exit()
+  elseif choice == 4 then
     os.exit()
   end
 end

@@ -1,11 +1,11 @@
 |==========================================|
-|     -- THEROS VERSION 1.1.12-B --        |
+|     -- THEROS VERSION 1.1.13-B --        |
 |==========================================|
 
 -- ADDED --
 
 -- FIXED/CHANGED --
-- Fix variable name mismatch (again)
+- Change installation process
 
 -- REMOVED --
 
