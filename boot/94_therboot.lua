@@ -6,4 +6,4 @@ gpu.fill(1, 1, w, h, " ")
 
 local sysver = require("conlib").version()
 require("centertext")(h/2, "Welcome to TherOS " .. sysver)
-pcall(require("shell").execute("/sys/env/main.lua"))
+pcall(loadfile("/sys/env/main.lua")(loadfile))
