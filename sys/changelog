@@ -1,11 +1,12 @@
 |==========================================|
-|     -- THEROS VERSION 1.1.13-B --        |
+|      -- THEROS VERSION 1.1.14-B --       |
 |==========================================|
 
 -- ADDED --
 
 -- FIXED/CHANGED --
-- Change installation process
+- Shorten error type names
+- fix off-center header in changelog
 
 -- REMOVED --
 

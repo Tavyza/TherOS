@@ -15,7 +15,7 @@ function theros.run(program)
   local prgm = ""
   local file, reason = io.open(program, "r")
   if not file then
-    return false, "ERROR: " .. reason
+    return false, "ERR: " .. reason
   end
   repeat
     local chunk = file:read(math.huge)
@@ -27,12 +27,12 @@ function theros.run(program)
 
   local func, reason = load(prgm, "=" .. program)
   if not func then
-    return false, "LOAD ERROR: " .. reason
+    return false, "LDERR: " .. reason
   end
 
   local success, result = pcall(func)
   if not success then
-    return false, "EXECUTE ERROR: " .. result
+    return false, "EXECERR: " .. result
   end
   return result
 end
