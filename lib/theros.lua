@@ -75,8 +75,8 @@ function theros.popup(header, type, text)
       ct((h/2)-2, header)
       ct((h/2)-1, text)
       ct(h/2, "Press ENTER to close")
-      _ = io.read()
       ct((h/2)+1, string.rep("-", #header))
+      _ = io.read()
     end
   elseif type == "input" then
     ct((h/2)-2, header)
@@ -91,7 +91,7 @@ function theros.popup(header, type, text)
     ct((h/2)+1, string.rep("-", #header))
   else
     ct((h/2)-1, "-----POPUP NOT SET UP PROPERLY!-----")
-    ct(h/2, "Missing 'type' for popup.")
+    ct(h/2, "Missing or incorrect 'type' for popup.")
     ct((h/2)+1, string.rep("-", #"-----POPUP NOT SET UP PROPERLY!-----"))
   end
 end

@@ -1,16 +1,25 @@
 |==========================================|
-|      -- THEROS VERSION 1.1.14-B --       |
+|        -- THEROS VERSION 1.1 --          |
 |==========================================|
 
+- Now a proper release!!! This release brings to the main branch:
+
 -- ADDED --
+- Scrolling in file manager
+- The option to open a terminal from the new file/directory menu
+- Window borders
+- Configuration
+- Some fancy new libraries
+- Maybe installing programs from floppy? Added but not tested
+- Uptime to main menu
 
 -- FIXED/CHANGED --
-- Shorten error type names
-- fix off-center header in changelog
+- A better therboot
+- Error handling
+- Apps in main menu are sorted
 
 -- REMOVED --
-
-!!! BLEEDING EDGE RELEASE, EXPECT BUGS AND ALL SORTS OF ISSUES. !!!
+- old installer directory in github
 
 Planned: No new apps will be created until a window manager is set up. I will have to port existing programs. Please check the project linked with TherOS for context.
 
