@@ -1,181 +1,191 @@
-local component = require("component")
-local gpu = component.gpu
 local fs = require("filesystem")
-local e = require("event")
 local t = require("term")
-local keyboard = require("keyboard")
-local centerText = require("centerText")
+local gpu = require("component").gpu
+local e = require("event")
+local kb = require("keyboard")
+local shell = require("shell")
+local ct = require("centertext")
+local th = require("theros")
+local fsu = require("fsutils")
+local bkgclr, txtclr, _, _, fmdclr, fmfclr, _, trmdir, editor = require("conlib").general()
 
 local w, h = gpu.getResolution()
-gpu.fill(1, 1, w, h, " ")
+::inthebeginning::
+gpu.setBackground(bkgclr)
 
-local function listFiles(currentPath)
-    local files = {"../", "./"}
-    for file in fs.list(currentPath) do
-        table.insert(files, file)
-    end
-    return files
+local currentDir = "/" -- sets to root dir at first, might change later
+
+local function listFiles(currentDir)
+  local files = {"../"}
+  for file in fs.list(currentDir) do
+    table.insert(files, file)
+  end
+  table.sort(files)
+  return files
 end
+startline = 3
+scrollpos = 0
+require("computer").pushSignal("scroll", 1, 1, 1)
+_, _, _, scroll = e.pull("scroll") -- pulls scroll event
 
-local function displayFiles(files, currentPath)
-    t.clear()
-    gpu.fill(1, 1, w, h, " ")
-    centerText(1, "File Manager - " .. currentPath, 0xFFFFFF)
-    for i, file in ipairs(files) do
-        if fs.isDirectory(currentPath .. file) or file == "../" or file == "./" then
-          color = 0x0000FF
-        else
-          color = 0x00FF00
-        end
-        centerText(3 + (i - 1) * 1, file, color)
-    end
-end
+local function displayFiles(files, currentDir) -- function to print out all files in the working directory
+  t.clear()
+  header = "File manager 1.1 -- " .. currentDir
+  maxlines = h - startline - 1
+  start = scrollpos + 1
+  dend = math.min(scrollpos + maxlines, #files)
 
-local function getFullPath(currentPath, file)
-    if file == "../" then
-        return fs.path(currentPath)
-    elseif file == "./" then
-        return currentPath
+  for i = start, dend do -- this just goes through the table
+    local file = files[i]
+    local fullPath = fs.concat(currentDir, file)
+    if fs.isDirectory(fullPath) then
+      color = fmdclr
     else
-        return fs.concat(currentPath, file)
+      color = fmfclr
     end
+    ct(3 + (i - start), file, color) -- well this just... prints the files
+  end
 end
 
-local currentPath = "/"
-optionsDisplayed = false
-
-local function displayCloseButton()
-    local closeButton = "Close"
-    centerText(h - 1, closeButton, 0xFFFFFF)
+local function getpath(currentDir, file)
+  if file == "../" then
+    return fs.path(currentDir)
+  else
+    return fs.concat(currentDir, file)
+  end
 end
 
-while true do
-    ::loop::
-    local files = listFiles(currentPath)
-    displayFiles(files, currentPath)
-    displayCloseButton()
+local function close()
+  ct(h - 1, "Exit")
+end
 
-    local _, _, _, y, _, _ = e.pull("touch")
-    if y >= h - 1 then
-        break
+while true do -- loop to keep the program running
+  local files = listFiles(currentDir)
+  displayFiles(files, currentDir)
+  close()
+  th.dwindow(1, 1, w, h, "File manager 1.1 -- " .. currentDir)
+  local ev, _, _, y, direction = e.pull()
+  if ev == "scroll" then
+    if direction == 1 and scrollpos > 0 then
+      scrollpos = scrollpos - 1
+    elseif direction == -1 and scrollpos < #files - (h - startline - 1) then
+      scrollpos = scrollpos + 1
     end
-    local choice = math.floor((y - 3) / 1) + 1
+  elseif ev == "touch" then 
+    if y == h - 1 then
+      break
+    end
+    local choice = y + (scrollpos - 2)
+    if choice >= 1 and choice <= #files then
+      local selectedFile = getpath(currentDir, files[choice])
+      print(selectedFile) -- outputting selected file so you know what you clicked
+      if fs.isDirectory(selectedFile) then
+        if kb.isKeyDown(0x2A) then -- shift key
+          local options = {"Open", "Copy", "Move/Rename", "Delete"}
+          local startLine = h / 2 - (#options / 2)
+          for i, option in ipairs(options) do
+            ct(startLine + (i - 1) * 2, option)
+          end
 
-    if choice >= 1 and choice <= #files and not optionsDisplayed then
-        local selectedFile = getFullPath(currentPath, files[choice])
-        print(selectedFile)
-        if fs.isDirectory(selectedFile) then
-          if keyboard.isKeyDown(0x2A) == true then
-            optionsDisplayed = true
-            local options = {"Open","Move/Rename", "Copy", "Delete"}
-            local optionSpacing = 2
-            local startLine = h / 2 - (#options * optionSpacing) / 2
-            for i, option in ipairs(options) do
-              centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
-            end
-            local _, _, _, yOption, _, _ = e.pull("touch")
-            local option = math.floor((yOption - startLine) / optionSpacing) + 1
-            print("Selected option: " .. option)
+          local _, _, _, yOption = e.pull("touch")
+          yOption = yOption + 1
+          local optionChoice = math.floor((yOption - startLine) / 2) + 1
 
-            if option == 1 then
-              print("Opening directory")
-              currentPath = selectedFile
-            elseif option == 2 then
-              print("New path (DOES NOT WORK ACROSS DIFFERENT FILESYSTEMS)")
-              io.write("LOCATION -> ")
-              fs.rename(selectedFile, io.read())
-            elseif option == 3 then
-              print("Where would you like to copy this directory? This will copy all files within it.")
-              io.write("LOCATION -> ")
-              fs.copy(selectedFile, io.read())
-            elseif option == 4 then
-              print("Are you sure you want to delete this directory? This will also remove all items inside of it!")
-              io.write("y/N -> ")
-              confirm = io.read()
-              if confirm == "y" then
-                fs.remove(selectedFile)
-              else
-                print("Removal cancelled")
+          if optionChoice == 1 then
+            currentDir = selectedFile
+          elseif optionChoice == 2 then
+            local input = th.popup("Copy", "input", "Enter copy destination")
+          fsu.copydir(selectedFile, input)
+          elseif optionChoice == 3 then
+            local input = th.popup("MOVE", "input", "Type new name/location: ")
+            fsu.movedir(selectedFile, input)
+          elseif optionChoice == 4 then
+            local confm = th.popup("Delete directory (y/N)", "input", "Are you sure you want to delete " .. selectedFile .. "? This action cannot be reversed!")
+            if confm == "y" then
+              local ok, err = fs.remove(selectedFile)
+              if not ok then
+                th.popup("ERROR", "err", "Error removing directory: " .. err)
               end
-              optionsDisplayed = false
+            end
+          end
+        else
+          currentDir = selectedFile
+        end
+      else
+        local options = {"Run", "Edit", "Copy", "Move/Rename", "Delete"}
+        local startLine = h / 2 - (#options / 2)
+        for i, option in ipairs(options) do
+          ct(startLine + (i - 1) * 2, option)
+        end
+
+        local _, _, _, yOption = e.pull("touch")
+        yOption = yOption + 1
+        local optionChoice = math.floor((yOption - startLine) / 2) + 1
+
+        if optionChoice == 1 then -- run
+          local good, err = th.run(selectedFile)
+          if not good and err then
+            th.popup("ERROR", "err", err)
+          end
+        elseif optionChoice == 2 then -- edit
+          local ok, err = shell.execute(editor .. " " .. selectedFile)
+          if not ok then
+            th.popup("ERROR", "err", "Error editing file: " .. err)
+          end
+        elseif optionChoice == 3 then -- copy
+          local input = th.popup("Copy", "input", "Enter copy destination")
+          local ok, err = fs.copy(selectedFile, input)
+          local err = "Error message could not load! You probably tried to copy to a directory that doesn't exist."
+          if not ok then
+            th.popup("ERROR", "err", "Error renaming file: " .. err)
+          end
+        elseif optionChoice == 4 then -- move
+          local input = th.popup("MOVE", "input", "Type new name/location: ")
+          local ok, err = fs.rename(selectedFile, input)
+          if not ok then
+            th.popup("ERROR", "err", "Error renaming file: " .. err)
+          end
+        elseif optionChoice == 5 then -- delete
+          local input = th.popup("Delete file (y/N)", "input", "Are you sure you want to delete " .. selectedFile .. "? This action cannot be reversed!")
+          if input == "y" then
+            local ok, err = fs.remove(selectedFile)
+            if not ok then
+              th.popup("ERROR", "err", "Error removing file: " .. err)
             end
           else
-          currentPath = selectedFile
+            ct((h / 2) + 5, "Error deleting " .. selectedFile .. ": Deletion cancelled", 0xFF0000)
+            no = io.read()
           end
-        else
-          optionsDisplayed = true
-          local options = {"Run", "Edit", "Copy", "Move/Rename", "Delete", "Cancel"}
-          local optionSpacing = 2
-          local startLine = h / 2 - (#options * optionSpacing) / 2
-          for i, option in ipairs(options) do
-            centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
-
-          end
-
-          local _, _, _, yOption, _, _ = e.pull("touch")
-
-          local option = math.floor((yOption - startLine) / optionSpacing) + 1
-          print("Selected option: " .. option)
-
-          if option == 1 then
-            print("Executing file: " .. selectedFile) 
-            local ok, err = pcall(dofile(selectedFile))
-            if not ok and err then
-              print(err)
-              io.write("ok")
-              io.read()
-            end
-            elseif option == 2 then
-              print("Editing file: " .. selectedFile) 
-              os.execute("edit " .. selectedFile)
-            elseif option == 3 then
-              print("Enter copy destination: ")
-              io.write("LOCATION -> ")
-              fs.copy(selectedFile, io.read())
-            elseif option == 4 then
-              print("Enter new path/name: ") 
-              io.write("LOCATION -> ")
-              print("Moving/renaming to: " .. io.read()) 
-              fs.rename(selectedFile, io.read())
-            elseif option == 5 then
-              print("Delete " .. selectedFile) 
-              print("Are you sure you want to remove this file?")
-              io.write("y/N -> ")
-              if io.read() == "y" then
-                fs.remove(selectedFile)
-              else
-                print("File not deleted.")
-              end
-            end
-            optionsDisplayed = false
         end
+      end
     else
-      optionsDisplayed = true
-      local options = {"New file", "New directory"}
-      local optionSpacing = 2
-      local startLine = h / 2 - (#options * optionSpacing) / 2
+      local options = {"New File", "New Directory", "Terminal"}
+      local startLine = h / 2 - (#options / 2)
       for i, option in ipairs(options) do
-        centerText(startLine + (i - 1) * optionSpacing, option, 0xFFFFFF)
+        ct(startLine + (i - 1) * 2, option)
       end
 
-      local _, _, _, yOption, _, _ = e.pull("touch")
-      local option = math.floor((yOption - startLine) / optionSpacing) + 1
-      print("Selected option " .. option)
-      if option == 1 then
-        print("New file name (INCLUDE EXTENTION)")
-        io.write("-> ")
-        newFile = io.read()
-        local file, err = fs.open(currentPath .. "/" .. newFile, "w")
-        file:close()
+      local _, _, _, yOption = e.pull("touch")
+      yOption = yOption + 1
+      local optionChoice = math.floor((yOption - startLine) / 2) + 1
+
+      if optionChoice == 1 then -- new file
+        local newfile = th.popup("New file", "input", "Name of new file: ")
+        local file, err = fs.open(fs.concat(currentDir, newfile), "w")
         if not file then
-          print(err)
+          th.popup("ERROR", "err", "Error making file: " .. err)
         end
-      elseif option == 2 then
-        print("New directory name")
-        io.write("DIRECTORY -> ")
-        fs.makeDirectory(currentPath .. "/" .. io.read() .. "/") 
-        -- os.sleep(2) -- debug, i forget what for but i'll just leave this here
+        file:close()
+      elseif optionChoice == 2 then -- new dir
+        local newdir = th.popup("New directory", "input", "New directory name: ")
+        local ok, err = fs.makeDirectory(fs.concat(currentDir, newdir))
+        if not ok then
+          th.popup("ERROR", "err", "Error making dir: " .. err)
+        end
+      elseif optionChoice == 3 then -- open terminal in location
+        shell.setWorkingDirectory(currentDir)
+        shell.execute(trmdir)
       end
-      optionsDisplayed = false                
     end
+  end
 end

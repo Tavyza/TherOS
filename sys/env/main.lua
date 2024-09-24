@@ -1,46 +1,63 @@
+print("loading...")
+
 local component = require("component")
 local gpu = component.gpu
 local c = require("computer")
 local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
-local centerText = require("centerText")
+local ct = require("centertext")
+local conf = require("conlib")
+local th = require("theros")
+local shell = require("shell")
 
-local appdir = "/sys/apps"
+local bkgclr, txtclr, _, _, _, _, appdir, _, _ = conf.general()
+local sysver = conf.version()
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
-
+gpu.setBackground(bkgclr)
 local function updateOptions()
-    local luaFiles = {}
-    for file in fs.list("/sys/apps") do
-        if (file:sub(-4) == ".lua" or file:sub(-4) == ".txt") and file ~= "main.lua" then
-            table.insert(luaFiles, file:sub(1, -5))
-        end
+    local apps = {}
+    for app in fs.list(appdir) do
+        table.insert(apps, app:sub(1, -5))
+        table.sort(apps)
     end
-    return luaFiles
+    return apps
 end
 
 local function displaySystemInfo()
+    local uptimeMins = c.uptime() / 60 % 60
+    local uptimeHour = (c.uptime() / 60) / 60
+    local uptimesec = c.uptime() % 60
+    uptime = c.uptime
+    if c.uptime() > 60 then
+        uptime = uptimeMins
+        unit = "min"
+    elseif c.uptime() > 3600 then
+        uptime = uptimeHour
+        unit = "hr"
+    end
     local memCap = math.floor(c.totalMemory() / 1000)
     local memUsed = math.floor(memCap - (c.freeMemory() / 1000))
-    centerText(h - 2, "Total RAM: " .. memCap .. " KB", 0xFFFFFF)
-    centerText(h - 1, "Used RAM: " .. memUsed .. " KB", 0xFFFFFF)
+    ct(h - 3, "Uptime: " .. string.format("%02.0f", math.floor(uptimeHour)) .. ":" .. string.format("%02.0f", math.floor(uptimeMins)) .. ":" .. string.format("%02.0f", math.floor(uptimesec)))
+    ct(h - 2, "Total RAM: " .. memCap .. " KB")
+    ct(h - 1, "Used RAM: " .. memUsed .. " KB")
 end
 
 local function displayMenu(options, topText)
     t.clear()
     gpu.fill(1, 1, w, h, " ")
-    centerText(1, topText, 0xFFFFFF)
+    ct(1, topText)
     displaySystemInfo()
     for i, option in ipairs(options) do
-        centerText(3 + (i - 1) * 2, option, 0xFFFFFF)
+        ct(3 + (i - 1) * 2, option)
     end
 end
 local options = updateOptions()
 table.insert(options, "reboot")
 table.insert(options, "shutdown")
-local topText = "TherOS 1.0.3"
+local topText = "TherOS " .. sysver
 
 displayMenu(options, topText)
 
@@ -73,7 +90,11 @@ while true do
             elseif selectedOption == "shutdown" then
                 c.shutdown()
             else
-                os.execute(appdir .. "/" .. selectedOption)
+                local good, err = shell.execute(fs.concat(appdir, selectedOption))
+                if not good then
+                    th.popup("Error!", "err", err)
+                    os.sleep(2)
+                end
                 displayMenu(options, topText)
             end
         end

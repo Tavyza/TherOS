@@ -1,190 +1,339 @@
+print("loading...")
+
+local fs = require("filesystem")
+local t = require("term")
+local e = require("event")
+local shell = require("shell")
 local component = require("component")
 local gpu = component.gpu
-local fs = require("filesystem")
-local e = require("event")
-local t = require("term")
-local c = require("computer")
-
 local w, h = gpu.getResolution()
-gpu.fill(1, 1, w, h, " ")
 
+local installerversion = "1.1.12-B"
+local header = "TherOS Updater"
+
+-- TEXT CENTERING
 local function centerText(y, text, color)
-    local x = math.floor(w / 2 - #text / 2)
-    gpu.setForeground(color)
-    gpu.set(x, y, text)
-end
-
-local function installerMenu()
-    local options = {"Install/update TherOS from GitHub", "Update Installer from GitHub", "Install a Separate Program from floppy", "Exit Installer"}
-    t.clear()
-    gpu.fill(1, 1, w, h, " ")
-    centerText(1, "TherOS 1.0.3 Installer", 0xFFFFFF)
-    for i, option in ipairs(options) do
-        centerText(3 + (i - 1) * 2, option, 0xFFFFFF)
-    end
-end
-
-local function installFromGithub()
-  print("Welcome to the TherOS installer version 1.0.3")
-  print("1 - TherOS stable release")
-  print("2 - TherOS bleeding edge (may contain bugs!)")
-  io.write("-> ")
-  ver = io.read()
-  print("!! ATTENTION !! BY INSTALLING THEROS, YOU UNDERSTAND THAT THIS SYSTEM WILL NO LONGER OPEN THE SHELL ON BOOT.")
-  io.write("Do you want to continue having read the notice above? yes i do / N -> ")
-  confirm = io.read()
-  if ver == "1" and confirm == "yes i do" then
-   print("-- 1/4 CREATING DIRECTORIES --")
-    print("checking for /sys/apps")
-    if fs.exists("/sys/apps") and fs.isDirectory("/sys/apps") then
-      print("/sys/apps exists, skipping...")
-    else
-      print("/sys/apps does not exist, creating...")
-      fs.makeDirectory("/sys/apps")
-    end
-    print("checking for /sys/util")
-    if fs.exists("/sys/util") and fs.isDirectory("/sys/util") then
-      print("/sys/util exists, skipping...")
-    else
-      print("/sys/util does not exist, creating...")
-      fs.makeDirectory("/sys/util")
-    end
-    print("checking for /sys/env")
-    if fs.exists("/sys/env") and fs.isDirectory("/sys/env") then
-      print("/sys/env exists, skipping...")
-    else
-      print("/sys/env does not exist, creating...")
-      fs.makeDirectory("/sys/env")
-    end
-    print("-- 2/4 DOWNLOADING LIBRARIES --")
-    print("centerText.lua -> /lib/centerText.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/lib/centerText.lua /lib/centerText.lua")
-    print("filesystem_ext.lua -> /lib/filesystem_ext.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/lib/filesystem_ext.lua /lib/filesystem_ext.lua")
-    print("-- 3/4 DOWNLOADING SYSTEM --")
-    print("main.lua -> /sys/env/main.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/env/main.lua /sys/env/main.lua")
-    print("file_manager.lua -> /sys/apps/file_manager.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/file_manager.lua /sys/apps/file_manager.lua")
-    print("installer.lua -> /sys/apps/installer.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua /sys/apps/installer.lua")
-    print("program_installer.lua -> /sys/apps/program_installer.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/program_installer.lua /sys/apps/program_installer.lua")
-    print("manual.lua -> /sys/apps/manual.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/manual.lua /sys/apps/manual.lua")
-    print("therterm.lua -> /sys/util/therterm.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/util/therterm.lua /sys/util/therterm.lua")
-    print("changelog.txt -> /sys/changelog.txt")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/changelog.txt")
-    print("-- 4/4 GRAPPING BOOT --")
-    print("removing shell starter...")
-    fs.remove("/boot/94_shell.lua")
-    print("systempuller.lua -> /boot/94_bootloader.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/main/boot/systempuller.lua /boot/94_bootloader.lua")
-    print("Installation finished! A reboot is required to get the system set up. Would you like to reboot now?")
-    io.write("y/N -> ")
-    rb = io.read()
-    if rb == "y" then
-      c.shutdown(true)
-    else
-      os.exit()
-    end
-  elseif ver == "2" and confirm == "yes i do" then
-    print("-- 1/4 CREATING DIRECTORIES --")
-    print("checking for /sys/apps")
-    if fs.exists("/sys/apps") and fs.isDirectory("/sys/apps") then
-      print("/sys/apps exists, skipping...")
-    else
-      print("/sys/apps does not exist, creating...")
-      fs.makeDirectory("/sys/apps")
-    end
-    print("checking for /sys/util")
-    if fs.exists("/sys/util") and fs.isDirectory("/sys/util") then
-      print("/sys/util exists, skipping...")
-    else
-      print("/sys/util does not exist, creating...")
-      fs.makeDirectory("/sys/util")
-    end
-    print("checking for /sys/env")
-    if fs.exists("/sys/env") and fs.isDirectory("/sys/env") then
-      print("/sys/env exists, skipping...")
-    else
-      print("/sys/env does not exist, creating...")
-      fs.makeDirectory("/sys/env")
-    end
-    print("Creating reload file (KEEP EMPTY, THIS IS JUST TO RELOAD THE MAIN ENVIRONMENT)")
-    os.execute("touch /sys/apps/reload.lua")
-    print("-- 2/4 DOWNLOADING LIBRARIES --")
-    print("centerText.lua -> /lib/centerText.lua")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/lib/centerText.lua /lib/centerText.lua")
-    print("filesystem_ext.lua -> /lib/filesystem_ext.lua")
-    os.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/lib/filesystem_ext.lua /lib/filesystem_ext.lua")
-    print("-- 3/4 DOWNLOADING SYSTEM --")
-    print("main.lua -> /sys/env/main.lua")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/env/main.lua /sys/env/main.lua")
-    print("file_manager.lua -> /sys/apps/file_manager.lua")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/apps/file_manager.lua /sys/apps/file_manager.lua")
-    print("installer.lua -> /sys/apps/installer.lua")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/apps/installer.lua /sys/apps/installer.lua")
-    print("program_installer.lua -> /sys/apps/program_installer.lua")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/apps/program_installer.lua /sys/apps/program_installer.lua")
-    print("therterm.lua -> /sys/util/therterm.lua")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/sys/util/therterm.lua /sys/util/therterm.lua")
-    print("-- 4/4 GRAPPING BOOT --")
-    print("removing shell starter...")
-    fs.remove("/boot/94_shell.lua")
-    print("systempuller.lua -> /boot/94_systempuller.lua")
-    os.execute("wget https://raw.githubusercontent.com/Tavyza/TherOS/bleeding-edge/boot/systempuller.lua /boot/94_systempuller.lua")
-    print("Installation finished! A reboot is required to get the system set up. Would you like to reboot now?")
-    io.write("y/N -> ")
-    rb = io.read()
-    if rb == "y" then
-      c.shutdown(true)
-    else
-      os.exit()
-    end
+  if color == nil then
+    color = 0xFFFFFF
   end
+  local x = math.floor(w / 2 - #text / 2)
+  gpu.setForeground(color)
+  gpu.set(x, y, text)
 end
-
-local function updateInstaller()
-    print("Pulling new installer and overwriting...")
-    os.execute("wget -f https://raw.githubusercontent.com/Tavyza/TherOS/main/sys/apps/installer.lua /sys/apps/installer.lua")
-    print("Finished. Exiting...")
+local function online()
+  ::onlineinstall::
+  t.clear()
+  centerText(1, "Please select branch: ")
+  local branches = {
+    "Main",
+    "Bleeding Edge",
+    "Unsupported versions",
+    "Back to menu"
+  }
+  for i, branch in ipairs(branches) do
+    centerText(3 + (i - 1) * 2, branch)
+  end
+  local _, _, _, y, _, _ = e.pull("touch")
+  local choice = math.floor((y - 3) / 2) + 1
+  local branch
+  if choice == 1 then
+    branch = "main"
+  elseif choice == 2 then
+    branch = "bleeding-edge"
+  elseif choice == 3 then
+    print("Feature not supported yet. (how ironic)\nMaybe this will be out by the time 1.1 goes on to the main branch.")
+    os.sleep(2)
     os.exit()
-end
-
-local function installSeparateProgram()
-  print("Please type the drive ID. you can find this by leaving the screen, hovering over the drive, and looking at the first 3 characters of the long string in the tooltip of the drive (the thing with the name and stuff)")
-  io.write("drive ID -> ")
-  local installMedia = io.read()
-  print ("Getting files...")
-  local sourcedir = "/mnt/" .. installMedia
-  local destdir = "/home/"
-  -- Iterate through all files in the source directory
-  for entry in fs.list(sourcedir) do
-    local sourcePath = sourcedir .. "/" .. entry
-    local destinationPath = destdir .. "/" .. entry
-    if not fs.isDirectory(sourcePath) then
-      fs.copy(sourcePath, destinationPath)
-    end
+  elseif choice == 4 then
+    menu()
   end
-end
-  centerText(h - 2, "Files copied successfully.", 0xFFFFFF)
 
-
-installerMenu()
-
-while true do
+  t.clear()
+  io.write("Getting version...")
+  shell.execute("wget -q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/sys/.config/version.tc /tmp/version.tc")
+  local verfile = io.open("/tmp/version.tc", "r")
+  local versionlist = verfile:read("*a")
+  verfile:close()
+  for line in versionlist:gmatch("[^\r\n]+") do
+    version = line:match("System:%s*(.+)")
+    if version or version ~= nil then break end
+  end
+  io.write("Finding old version...")
+  if fs.exists("/lib/conlib.lua") then
+    local oldver = require("conlib").version() 
+  else
+    print("Config library not found. Proceeding...")
+    oldver = "undefined"
+  end
+  if version == "" or version == nil then version = "error" end
+  if version ~= oldver then
+    centerText(1, "Do you want to install " .. version .. "?")
+    centerText(3, "Yes")
+    centerText(5, "No")
     local _, _, _, y, _, _ = e.pull("touch")
     local choice = math.floor((y - 3) / 2) + 1
     if choice == 1 then
-        installFromGithub()
+      t.clear()
+      
+      centerText(math.floor(h / 2), "PREPPING INSTALLATION...")
+      local chlg, therterm, manual, programInstaller
+      print("Y/n install changelog?")
+      io.write("-> ")
+      chlg = io.read()
+      print("Option saved")
+      print("Y/n install therterm?")
+      io.write("-> ")
+      therterm = io.read()
+      print("Option saved")
+      print("Y/n install manual?")
+      io.write("-> ")
+      manual = io.read()
+      print("Option saved")
+      print("Y/n online program installer?")
+      io.write("-> ")
+      programInstaller = io.read()
+      print("Option saved")
+      print("y/N replace config? Replace if you're installing fresh.")
+      io.write("-> ")
+      replaceconf = io.read()
+      print("Option saved")
+      print("y/N Tier 1/2 compatibility?")
+      io.write("-> ")
+      t1compat = io.read()
+      print("Option saved")
+      print("Pre-installation questions complete, proceeding with installation...")
+      t.clear()
+      centerText(math.floor(h / 2), "CREATING DIRECTORIES (1/2)...")
+      if not fs.exists("/sys/apps/") then
+        print("Creating /sys/apps/...")
+        fs.makeDirectory("/sys/apps/")
+      end
+      if not fs.exists("/sys/env/") then
+        print("Creating /sys/env/...")
+        fs.makeDirectory("/sys/env/")
+      end
+      if not fs.exists("/sys/util/") then
+        print("Creating /sys/util/")
+        fs.makeDirectory("/sys/util/")
+      end
+      if not fs.exists("/sys/.config/") then
+        print("Creating /sys/.config/")
+        fs.makeDirectory("/sys/.config/")
+      end
+      t.clear()
+      centerText(math.floor(h / 2), "INSTALLING (2/2)...")
+      local programs = {
+        "/lib/centertext.lua",
+        "/lib/fsutils.lua",
+        "/lib/theros.lua",
+        "/sys/apps/file_manager.lua",
+        "/sys/apps/installer.lua",
+        "/sys/apps/system_settings.lua",
+        "/sys/env/main.lua",
+        "/boot/94_therboot.lua",
+        "/bin/clr.lua",
+        "/lib/conlib.lua",
+        "/sys/.config/version.tc"
+      }
+      if chlg ~= "n" then
+        table.insert(programs, "/sys/changelog")
+      end
+      if therterm ~= "n" then
+        table.insert(programs, "/sys/util/therterm.lua")
+      end
+      if manual ~= "n" then
+        table.insert(programs, "/sys/apps/manual.lua")
+      end
+      if programInstaller ~= "n" then
+        table.insert(programs, "/sys/apps/program_installer.lua")
+      end
+      if replaceconf == "y" or replaceconf == "Y" then
+        if t1compat ~= "y" then
+          table.insert(programs, "/sys/.config/general.tc")
+        else
+          shell.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/sys/.config/gn-t1compat.tc /sys/.config/general.tc")
+        end
+      end
+      for _, program in ipairs(programs) do
+        print("Installing " .. program .. "...")
+        shell.execute("wget -f -q https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. program .. " " .. program)
+        io.write("[DONE]")
+      end
+      t.clear()
+      centerText(math.floor(h / 2), "Finished! Reboot?")
+      t.setCursor(math.floor((w / 2) - 8), math.floor(h / 2) + 1)
+      io.write("Y/n -> ")
+      if io.read() == "n" then
+        os.exit()
+      else
+        require("computer").shutdown(true)
+      end
     elseif choice == 2 then
-        updateInstaller()
-    elseif choice == 3 then
-        installSeparateProgram()
-    elseif choice == 4 then
-        break
+      os.exit()
     end
-    installerMenu()
+  elseif version == oldver then
+    centerText(1, "You are on the latest version of TherOS. Continue anyways?")
+    centerText(3, "Yes")
+    centerText(5, "No")
+    local _, _, _, y, _, _ = e.pull("touch")
+    local choice = math.floor((y - 3) / 2) + 1
+    if choice == 1 then
+      goto onlineinstall
+    elseif choice == 2 then
+      os.exit()
+    end
+  end
 end
+
+local function floppy()
+  for address in component.list("filesystem") do
+    local drive = component.proxy(address)
+    if drive.exists("conlib") then
+      fs.makeDirectory("/install/")
+      fs.mount(address, "/install/")
+      print("Mounted " .. address .. " to /install/.")
+      local oldconfig = require("/install/lib/conlib")
+      if not oldconfig then
+        print("No config found on install media.")
+      else
+        version = oldconfig.version()
+        print("Valid filesystem found! Version: " .. version)
+        install = true
+      end
+    else
+      print("No install media found! Requires a valid TherOS conlib.lua file.")
+      install = false
+    end
+  end
+
+  if install == false then
+    print("Cannot install TherOS. No valid install media found.")
+    os.sleep(2)
+    os.exit()
+  elseif install == true then
+    print("Installation starting... checking integrity of install media...")
+    t.clear()
+    print("Pre-installation questions. Type \"skip\" to skip the questions.")
+    local chlg, therterm, manual, programInstaller
+    if io.read() ~= "skip" then
+      print("Y/n install changelog?")
+      io.write("-> ")
+      chlg = io.read()
+      print("Option saved")
+      print("Y/n install therterm?")
+      io.write("-> ")
+      therterm = io.read()
+      print("Option saved")
+      print("Y/n install manual?")
+      io.write("-> ")
+      manual = io.read()
+      print("Option saved")
+      print("Y/n online program installer?")
+      io.write("-> ")
+      programInstaller = io.read()
+      print("Option saved")
+      print("Pre-installation questions complete, proceeding with installation...")
+    else
+      print("Skipping, proceeding with installation...")
+    end
+    t.clear()
+    centerText(math.floor(h / 2), "CREATING DIRECTORIES (1/2)...")
+    if not fs.exists("/sys/apps/") then
+      print("Creating /sys/apps/...")
+      fs.makeDirectory("/sys/apps/")
+    end
+    if not fs.exists("/sys/env/") then
+      print("Creating /sys/env/...")
+      fs.makeDirectory("/sys/env/")
+    end
+    if not fs.exists("/sys/util/") then
+      print("Creating /sys/util/")
+      fs.makeDirectory("/sys/util/")
+    end
+    t.clear()
+    centerText(math.floor(h / 2), "INSTALLING (2/2)...")
+    local programs = {
+      "/lib/centertext.lua",
+      "/lib/fsutils.lua",
+      "/lib/conlib.lua",
+      "/lib/theros.lua",
+      "/sys/apps/file_manager.lua",
+      "/sys/apps/installer.lua",
+      "/sys/apps/system_settings.lua",
+      "/sys/env/main.lua",
+      "/boot/94_therboot.lua"
+    }
+    if chlg ~= "n" then
+      table.insert(programs, "/sys/changelog")
+    end
+    if therterm ~= "n" then
+      table.insert(programs, "/sys/util/therterm.lua")
+    end
+    if manual ~= "n" then
+      table.insert(programs, "/sys/apps/manual.lua")
+    end
+    if programInstaller ~= "n" then
+      table.insert(programs, "/sys/apps/program_installer.lua")
+    end
+
+    for _, program in ipairs(programs) do
+      io.write("Checking for " .. program .. "...")
+      if fs.exists("/install" .. program) then
+        io.write("success!")
+        fs.copy("/install" .. program, program)
+      else
+        io.write("Corrupt installation media. Aborting...")
+        return "menu"
+      end
+    end
+    t.clear()
+    centerText(math.floor(h / 2), "Finished! Reboot?")
+    t.setCursor(math.floor((w / 2) - 8), math.floor(h / 2) + 1)
+    io.write("Y/n -> ")
+    if io.read() == "n" then
+      os.exit()
+    else
+      require("computer").shutdown(true)
+    end
+  end
+end
+
+local function menu()
+  local options = {
+    "Install/Update TherOS (Online)",
+    "Install/Update TherOS (Floppy disk)",
+    "Update installer",
+    "Exit",
+  }
+  t.clear()
+  centerText(1, header)
+  for i, option in ipairs(options) do
+    centerText(3 + (i - 1) * 2, option)
+  end
+  local _, _, _, y, _, _ = e.pull("touch")
+  local choice = math.floor((y - 3) / 2) + 1
+  if choice == 1 then
+    online()
+  elseif choice == 2 then
+    floppy()
+  elseif choice == 3 then
+    print("Updating installer, please wait...")
+    print([[
+      Branch:
+      [M]ain
+      [B]leeding edge
+    ]])
+    branch = io.read()
+    if branch == "m" or branch == "M" then
+      branch = "main"
+    elseif branch == "b" or branch == "B" then
+      branch = "bleeding-edge"
+    end
+    shell.execute("wget -q -f https://raw.githubusercontent.com/Tavyza/TherOS/" .. branch .. "/sys/apps/installer.lua /sys/apps/installer.lua")
+    os.exit()
+  elseif choice == 4 then
+    os.exit()
+  end
+end
+
+menu()
