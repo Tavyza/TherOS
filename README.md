@@ -1,5 +1,6 @@
 # TherOS
 Lightweight OS for OpenComputers
+
 1.0.x is discontinued.
 
 ## INSTALLATION
