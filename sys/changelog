@@ -1,25 +1,15 @@
 |==========================================|
-|        -- THEROS VERSION 1.1 --          |
+|       -- THEROS VERSION 1.2-B --         |
 |==========================================|
 
-- Now a proper release!!! This release brings to the main branch:
 
 -- ADDED --
-- Scrolling in file manager
-- The option to open a terminal from the new file/directory menu
-- Window borders
-- Configuration
-- Some fancy new libraries
-- Maybe installing programs from floppy? Added but not tested
-- Uptime to main menu
+- Started working on Abyss window manager
+- Added crypt library from windowmanager (available in the TOCR)
 
 -- FIXED/CHANGED --
-- A better therboot
-- Error handling
-- Apps in main menu are sorted
 
 -- REMOVED --
-- old installer directory in github
 
 Planned: No new apps will be created until a window manager is set up. I will have to port existing programs. Please check the project linked with TherOS for context.
 
