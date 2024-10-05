@@ -1,0 +1,17 @@
+Opened file
+Seeding random
+Loading /core/interrupt.lua
+Loading /core/scheduler.lua
+Loading /core/thread.lua
+Loading /core/io.lua
+Loading /core/keyboard.lua
+Loading /core/shell.lua
+Loading /core/require.lua
+Finishing library initialization
+Changing IO gpu
+Attempting to run file at /bin/ls.lua
+Attempting to run file at /bin/cat.lua
+Attempting to run file at /bin/test.lua
+Attempting to run file at /bin/test.lua
+Attempting to run file at /bin/edit.lua
+Attempting to run file at /bin/edit.lua
