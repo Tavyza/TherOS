@@ -30,7 +30,7 @@ local function runCommand(file)
 
     -- Maybe add a PATH eventually or something
     if not file:match("%.lua$") then
-        file = "/bin/" .. file .. ".lua"
+        file = "/cmd/" .. file .. ".lua"
     end
 
     if fs.exists(file) then
