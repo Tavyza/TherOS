@@ -1,18 +1,1 @@
-local require = function(file)
-  local buffer = ""
-  local f = fs.open(file)
-  if f == nil then return nil end
-
-  while true do
-      local data = f:read(math.maxinteger)
-      if data == nil then break end
-
-      buffer = buffer .. data
-  end
-
-  f:close()
-
-  return load(buffer, "=" .. file, "bt", _G)
-end
-
-return require
+local a=function(b)local c=""local d=fs.open(b)if d==nil then return nil end;while true do local e=d:read(math.maxinteger)if e==nil then break end;c=c..e end;d:close()return load(c,"="..b,"bt",_G)end;return a
