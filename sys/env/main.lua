@@ -15,7 +15,7 @@ local bkgclr = tonumber(conf.getvalue("/sys/.config/general.tc", "Bck-clr"))
 local txtclr = tonumber(conf.getvalue("/sys/.config/general.tc", "Txt-clr"))
 local appdir = conf.getvalue("/sys/.config/general.tc", "App-dir")
 
-local sysver = conf.version()
+local sysver = conf.getvalue("/sys/.config/version.tc", "System")
 
 local w, h = gpu.getResolution()
 gpu.fill(1, 1, w, h, " ")
