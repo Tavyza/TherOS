@@ -7,11 +7,14 @@ local fs = require("filesystem")
 local e = require("event")
 local t = require("term")
 local ct = require("centertext")
-local conf = require("conlib")
+local conf = require("tc-read")
 local th = require("theros")
 local shell = require("shell")
 
-local bkgclr, txtclr, _, _, _, _, appdir, _, _ = conf.general()
+local bkgclr = tonumber(conf.getvalue("/sys/.config/general.tc", "Bck-clr"))
+local txtclr = tonumber(conf.getvalue("/sys/.config/general.tc", "Txt-clr"))
+local appdir = conf.getvalue("/sys/.config/general.tc", "App-dir")
+
 local sysver = conf.version()
 
 local w, h = gpu.getResolution()

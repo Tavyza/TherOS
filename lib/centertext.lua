@@ -1,9 +1,10 @@
 -- TherOS text centering library
 local gpu = require("component").gpu
-local conf = require("conlib")
+local conf = require("tc-read")
 
 local w, h = gpu.getResolution()
-local _, txtclr, _, _, _, _, _, _ = conf.general()
+local txtclr = tonumber(conf.getvalue("/sys/.config/general.tc", "Txt-clr"))
+
 centertext = {}
 function centertext(y, text, color)
   if text ~= nil then

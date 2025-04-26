@@ -1,5 +1,6 @@
 -- conlib for TherOS
 conlib = {}
+
 configfile = io.open("/sys/.config/general.tc", "r")
 fullfile = configfile:read("*a")
 configfile:close()

@@ -7,7 +7,15 @@ local shell = require("shell")
 local ct = require("centertext")
 local th = require("theros")
 local fsu = require("fsutils")
-local bkgclr, txtclr, _, _, fmdclr, fmfclr, _, trmdir, editor = require("conlib").general()
+local con = require("tc-read")
+local cpath = "/sys/.config/general.tc"
+local bkgclr = tonumber(con.getvalue(cpath,"Bck-clr"))
+local txtclr = tonumber(con.getvalue(cpath,"Txt-clr"))
+local fmdclr = tonumber(con.getvalue(cpath,"Fmd-clr"))
+local fmfclr = tonumber(con.getvalue(cpath,"Fmf-clr"))
+local trmdir = con.getvalue(cpath,"Trm-dir")
+local editor = con.getvalue(cpath,"Edt-dir")
+
 
 local w, h = gpu.getResolution()
 ::inthebeginning::

@@ -4,6 +4,8 @@ local term = require("term")
 local shell = require("shell")
 local fs = require("filesystem")
 local sh = require("sh")
+local conf = require("tc-read")
+
 
 local wd = shell.getWorkingDirectory()
 
