@@ -1,5 +1,5 @@
 # TherOS
-Lightweight OS for OpenComputers
+Lightweight shell for OpenComputers
 
 ## INSTALLATION
 
